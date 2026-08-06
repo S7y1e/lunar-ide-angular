@@ -1,0 +1,39 @@
+<div class="sidebar">
+    <div class="header">
+        <span class="title">🔗 Dependencies</span>
+        <button class="headerBtn" title="Refresh" (click)="deps.refresh()">⟳</button>
+    </div>
+
+    <div class="body">
+        @if (!rel()) {
+            <div class="empty">
+                {{ deps.loading() ? 'Loading…' : 'Open a module to see what it requires and what requires it.' }}
+            </div>
+        } @else {
+            <div class="module" [title]="rel()!">{{ baseName(rel()!) }}</div>
+
+            <div class="section">→ Requires ({{ requires().length }})</div>
+            @for (e of requires(); track e.to) {
+                <button class="row" [title]="e.to" (click)="open(e.to)">
+                    <span class="name">{{ baseName(e.to) }}</span>
+                    <span class="path">{{ e.to }}</span>
+                </button>
+            }
+
+            <div class="section">← Required by ({{ requiredBy().length }})</div>
+            @for (e of requiredBy(); track e.from) {
+                <button class="row" [title]="e.from" (click)="open(e.from)">
+                    <span class="name">{{ baseName(e.from) }}</span>
+                    <span class="path">{{ e.from }}</span>
+                </button>
+            }
+
+            @if (unresolved().length > 0) {
+                <div class="section">Unresolved ({{ unresolved().length }})</div>
+                @for (u of unresolved(); track $index) {
+                    <div class="unresolved" [title]="u.expr">{{ u.expr }}</div>
+                }
+            }
+        }
+    </div>
+</div>

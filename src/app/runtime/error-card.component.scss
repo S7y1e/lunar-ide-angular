@@ -1,0 +1,102 @@
+.errorCard {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin: 4px 8px;
+    overflow: hidden;
+}
+.errorCardHeader {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    border: none;
+    background: var(--danger-hover);
+    color: var(--text);
+    padding: 6px 8px;
+    cursor: pointer;
+    text-align: left;
+}
+.errorIcon {
+    color: var(--danger);
+    flex: none;
+}
+.errorMessage {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 12px;
+}
+.chevron {
+    flex: none;
+    color: var(--muted);
+    font-size: 10px;
+}
+.errorBody {
+    background: var(--bg-deep);
+}
+.sourceCtx {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 4px 0;
+}
+.ctxLine {
+    display: flex;
+    gap: 8px;
+    padding: 0 8px;
+}
+.ctxLine.ctxTarget {
+    background: var(--danger-hover);
+}
+.ctxNum {
+    color: var(--muted);
+    width: 24px;
+    text-align: right;
+    flex: none;
+}
+.ctxText {
+    white-space: pre;
+    overflow-x: auto;
+}
+.stackFrames {
+    border-top: 1px solid var(--divider);
+    padding: 4px 0;
+}
+.frame {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    padding: 2px 8px;
+    font-size: 11px;
+    cursor: default;
+}
+.frame.frameLink {
+    cursor: pointer;
+    color: var(--text);
+}
+.frame.frameLink:hover {
+    background: var(--hover);
+}
+.frame.frameUnresolved {
+    color: var(--muted);
+}
+.frameIndex {
+    color: var(--muted);
+    width: 14px;
+    text-align: right;
+    flex: none;
+}
+.framePath {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.frameLine {
+    color: var(--muted);
+}
+.frameLabel {
+    color: var(--muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

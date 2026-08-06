@@ -1,0 +1,11 @@
+@if (tool(); as t) {
+    <div class="dock">
+        <div class="header">
+            <span class="title">{{ label(t) }}</span>
+            <button class="close" (click)="layout.collapse(region())" title="Close">✕</button>
+        </div>
+        <div class="content">
+            <app-tool-window [id]="t" />
+        </div>
+    </div>
+}

@@ -1,0 +1,48 @@
+<div class="overlay" (click)="close.emit()">
+    <div class="dialog" (click)="$event.stopPropagation()">
+        <div class="title">Move module</div>
+        <div class="from">{{ baseName() }}</div>
+        <input
+            class="input"
+            [value]="destDir()"
+            autofocus
+            spellcheck="false"
+            placeholder="Destination folder (relative to project root)"
+            (input)="onInput($any($event.target).value)"
+            (keydown)="onKeyDown($event)"
+        />
+
+        @if (plan(); as p) {
+            <div class="summary">
+                @if (noop()) {
+                    Already in this folder.
+                } @else if (p.edits.length === 0) {
+                    Will move to {{ p.newRel }} — no references to update.
+                } @else {
+                    Will move to {{ p.newRel }}. {{ p.edits.length }} reference{{ p.edits.length === 1 ? '' : 's' }} in
+                    {{ groups().length }} file{{ groups().length === 1 ? '' : 's' }} will be updated.
+                }
+            </div>
+            <div class="preview">
+                @for (group of groups(); track group[0]) {
+                    <div class="group">
+                        <div class="file">{{ group[0] }}</div>
+                        @for (edit of group[1]; track $index) {
+                            <div class="edit">
+                                <span class="line">{{ edit.line }}</span>
+                                <code class="after">{{ edit.after.trim() }}</code>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        }
+
+        <div class="actions">
+            <button class="cancel" (click)="close.emit()">Cancel</button>
+            <button class="apply" [disabled]="!plan() || busy() || noop()" (click)="confirm()">
+                {{ busy() ? 'Moving…' : 'Move' }}
+            </button>
+        </div>
+    </div>
+</div>

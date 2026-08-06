@@ -1,0 +1,56 @@
+<div class="sidebar">
+    <div class="header">
+        <span class="title">
+            🧪 Tests
+            @if (tests.results() && !tests.results()!.error) {
+                <span class="count">{{ pass() }}/{{ pass() + fail() + skip() }}</span>
+            }
+        </span>
+        @if (tests.configured()) {
+            <button class="headerBtn" [disabled]="tests.running()" title="Run tests (TestEZ)" (click)="tests.run()">
+                {{ tests.running() ? '⏳' : '▶' }}
+            </button>
+        }
+    </div>
+
+    <div class="body">
+        @if (!tests.configured()) {
+            <div class="onboard">
+                🧪
+                <p>
+                    TestEZ runs your <code>*.spec.luau</code> tests inside Studio (edit mode — no
+                    Play needed). Set it up and a sample spec will be created.
+                </p>
+                <button class="cta" [disabled]="tests.busy()" (click)="onSetup()">
+                    {{ tests.busy() ? 'Installing…' : 'Set up TestEZ' }}
+                </button>
+                @if (tests.setupLog()) {
+                    <pre class="log">{{ tests.setupLog() }}</pre>
+                }
+            </div>
+        } @else if (tests.results()?.error) {
+            <div class="empty">{{ tests.results()!.error }}</div>
+        } @else if (!tests.results()) {
+            <div class="empty">
+                @if (tests.running()) {
+                    Running tests in Studio…
+                } @else {
+                    🧪 Open Studio (synced), then press ▶ or run the "Test: Run (TestEZ)" command.
+                }
+            </div>
+        } @else {
+            <div class="summary">
+                <span class="success">{{ pass() }} passed</span>
+                @if (fail() > 0) {
+                    <span class="failure">{{ fail() }} failed</span>
+                }
+                @if (skip() > 0) {
+                    <span class="skipped">{{ skip() }} skipped</span>
+                }
+            </div>
+            @for (child of tests.results()!.children ?? []; track $index) {
+                <app-test-node [node]="child" [depth]="0" />
+            }
+        }
+    </div>
+</div>

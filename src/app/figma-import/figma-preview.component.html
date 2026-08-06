@@ -1,0 +1,129 @@
+@if (tree(); as t) {
+    <div class="overlay">
+        <app-figma-tree-manager
+            [trees]="trees()"
+            [selectedIdx]="selectedIdx()"
+            [selectedIds]="selectedIds()"
+            [excluded]="excluded()"
+            [overrides]="overrides()"
+            (selectTree)="onSelectTree($event)"
+            (selectNode)="onSelectNodeEvent($event)"
+            (toggleExclude)="toggleExclude($event)"
+        />
+
+        <div class="main">
+            <div class="header">
+                <span class="title">Preview: &ldquo;{{ t.name }}&rdquo;</span>
+                <span class="dims">{{ t.size.w }} × {{ t.size.h }}</span>
+                <div class="spacer"></div>
+                <div class="seg">
+                    @for (m of ['Offset', 'Scaled']; track m) {
+                        <button [class]="sizeMode() === m ? 'segOn' : 'segOff'" (click)="sizeMode.set($any(m))">
+                            {{ m }}
+                        </button>
+                    }
+                </div>
+                <div class="seg">
+                    @for (m of ['ScreenGui', 'Frame']; track m) {
+                        <button [class]="rootMode() === m ? 'segOn' : 'segOff'" (click)="rootMode.set($any(m))">
+                            {{ m }}
+                        </button>
+                    }
+                </div>
+                <button class="close" (click)="close.emit()" title="Close (Esc)">✕</button>
+            </div>
+
+            <div class="viewport" #viewport>
+                <div class="stage" [style.width.px]="t.size.w" [style.height.px]="t.size.h" [style.transform]="'scale(' + scale() + ')'">
+                    <app-figma-node-view [n]="t" [ctx]="selectCtx()" />
+                </div>
+            </div>
+
+            <div class="elementBar">
+                {{ selectedIds().size > 0 ? selectedIds().size + ' selected — choose a class below' : nodeCount() + ' elements — click to select' }}
+            </div>
+
+            @if (singleNode(); as sn) {
+                <div class="inspector">
+                    <span class="inspectorName" [title]="sn.figmaName">{{ sn.figmaName }}</span>
+                    <div class="inspectorRow">
+                        @if (sn.props.stroke) {
+                            <button
+                                class="inspBtn"
+                                [class.inspBtnActive]="singleNoStroke()"
+                                (click)="toggleNoStrokeSingle()"
+                                title="Toggle UIStroke"
+                            >
+                                {{ singleNoStroke() ? 'Stroke OFF' : 'Stroke ON' }}
+                            </button>
+                        }
+                        @if (isTextNode()) {
+                            <label class="inspLabel">Color</label>
+                            <input
+                                type="color"
+                                class="inspColor"
+                                [value]="singleTextColor()"
+                                (input)="patchSingle({ color: $any($event.target).value })"
+                            />
+                            <label class="inspLabel">Size</label>
+                            <input
+                                type="number"
+                                class="inspNumber"
+                                [value]="singleTextSize()"
+                                min="6"
+                                max="120"
+                                (input)="patchSingle({ size: +$any($event.target).value })"
+                            />
+                            <button
+                                class="inspBtn"
+                                [class.inspBtnActive]="singleTextTransparent()"
+                                (click)="patchSingle({ transparent: !singleTextTransparent() })"
+                                title="Toggle background transparent"
+                            >
+                                BG Transparent
+                            </button>
+                        }
+                    </div>
+                </div>
+            }
+
+            <div class="classBar">
+                <button class="selectAll" (click)="selectAll()">Select All</button>
+                @for (cls of classes; track cls) {
+                    <button class="clsBtn" [attr.data-cls]="cls" (click)="applyClass(cls)" [disabled]="!selectedIds().size" [title]="cls">
+                        {{ cls }}
+                    </button>
+                }
+                <button class="clsBtn clsExclude" (click)="applyClass('exclude')" [disabled]="!selectedIds().size">Exclude</button>
+                <button class="clsBtn" [disabled]="!selectedIds().size" (click)="toggleNoStrokeSelected()">No Stroke</button>
+                <button class="clsBtn" (click)="applyClass('reset')" [disabled]="!selectedIds().size">Reset</button>
+            </div>
+
+            <div class="imagesPanel">
+                <div class="imagesPanelHeader">
+                    <span class="imagesCount">{{ images().length > 0 ? images().length + ' IMAGES' : 'IMAGES' }}</span>
+                    <label class="figmaNames">
+                        <input type="checkbox" [checked]="useFigmaNames()" (change)="useFigmaNames.set($any($event.target).checked)" />
+                        Use Figma Names
+                    </label>
+                </div>
+                @if (images().length === 0) {
+                    <div class="noImages">No images detected</div>
+                } @else {
+                    <div class="imageGrid">
+                        @for (img of images(); track img.hash) {
+                            <div class="imageThumb">
+                                <img [src]="'data:image/png;base64,' + img.png" [alt]="img.hash" />
+                                <span>{{ img.hash.slice(0, 8) }}</span>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+
+            <div class="sendBar">
+                <button class="send" (click)="send()">{{ sent() ? 'Sent ✓' : 'Send to Roblox' }}</button>
+            </div>
+        </div>
+    </div>
+}

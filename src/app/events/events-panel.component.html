@@ -1,0 +1,54 @@
+<div class="sidebar">
+    <div class="header">
+        <span class="title">📡 Events</span>
+        <button class="headerBtn" title="Refresh" (click)="events.refresh()">⟳</button>
+    </div>
+
+    <div class="body">
+        @if ((events.graph()?.signals ?? []).length === 0) {
+            <div class="empty">
+                {{ events.loading() ? 'Loading…' : 'No signals found yet — fire or connect a Remote/Bindable to see the topography.' }}
+            </div>
+        } @else {
+            @for (s of events.graph()!.signals; track s.id) {
+                <div class="flow">
+                    <div class="side">
+                        @if (s.firedBy.length === 0) {
+                            <span class="none">no fire sites</span>
+                        } @else {
+                            @for (f of s.firedBy; track f) {
+                                <button class="fileBox" [title]="f" (click)="open(f)">{{ baseName(f) }}</button>
+                            }
+                        }
+                    </div>
+                    <span class="arrow">→</span>
+                    <div class="signalNode" [style.color]="kindColor(s.kind)" [style.borderColor]="kindColor(s.kind)">
+                        <span [title]="s.label">📻 {{ s.label }}</span>
+                        <span class="kind">{{ s.kind }}</span>
+                    </div>
+                    <span class="arrow">→</span>
+                    <div class="side">
+                        @if (s.connectedBy.length === 0) {
+                            <span class="none">no listeners</span>
+                        } @else {
+                            @for (f of s.connectedBy; track f) {
+                                <button class="fileBox" [title]="f" (click)="open(f)">{{ baseName(f) }}</button>
+                            }
+                        }
+                    </div>
+                </div>
+            }
+        }
+
+        @if ((events.graph()?.unresolved ?? []).length > 0) {
+            <div class="section">Unresolved ({{ events.graph()!.unresolved.length }})</div>
+            @for (u of events.graph()!.unresolved; track $index) {
+                <button class="unresolved" [title]="u.action + ' in ' + u.from" (click)="open(u.from)">
+                    <span class="arrow">{{ u.action === 'fire' ? '▲' : '▼' }}</span>
+                    {{ u.expr }}
+                    <span class="from">{{ baseName(u.from) }}</span>
+                </button>
+            }
+        }
+    </div>
+</div>

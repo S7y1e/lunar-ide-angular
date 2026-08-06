@@ -1,0 +1,7 @@
+<div class="paletteTabs">
+    @for (s of scopes; track s) {
+        <span class="paletteTab" [class.paletteTabActive]="s === scope()" (click)="select.emit(s)">
+            {{ label[s] }}
+        </span>
+    }
+</div>

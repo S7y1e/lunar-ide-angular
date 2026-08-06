@@ -1,0 +1,12 @@
+@if (segments().length > 0) {
+    <div class="breadcrumbs">
+        @for (seg of segments(); track $index) {
+            <span class="crumb">
+                @if ($index > 0) {
+                    <span class="crumbSep">&#8250;</span>
+                }
+                <span [class]="$last ? 'crumbFile' : 'crumbDir'">{{ seg }}</span>
+            </span>
+        }
+    </div>
+}

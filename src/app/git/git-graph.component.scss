@@ -1,0 +1,33 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+.empty {
+    padding: 16px 12px;
+    color: var(--muted);
+    font-size: 12px;
+}
+.graphScroll {
+    overflow: auto;
+    flex: 1;
+    min-height: 0;
+}
+.graph {
+    display: block;
+}
+.nodeG {
+    cursor: pointer;
+}
+.refChip {
+    fill: var(--bg-deep);
+    stroke: var(--border);
+    stroke-width: 1;
+}
+.refText {
+    fill: var(--text);
+    font-size: 9px;
+    dominant-baseline: middle;
+    font-family: 'JetBrains Mono', monospace;
+}

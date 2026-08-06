@@ -1,0 +1,55 @@
+{
+    "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
+    "productName": "Lunar Angular Preview",
+    "version": "0.0.0",
+    "identifier": "dev.S7y1e.lunar-ide-angular",
+    "build": {
+        "frontendDist": "../dist/lunar-ide-angular/browser",
+        "devUrl": "http://localhost:4200",
+        "beforeDevCommand": "npm run start",
+        "beforeBuildCommand": "npm run build"
+    },
+    "app": {
+        "windows": [
+            {
+                "title": "Lunar (Angular preview)",
+                "width": 800,
+                "height": 600,
+                "minWidth": 800,
+                "minHeight": 600,
+                "resizable": true,
+                "fullscreen": false,
+                "decorations": false
+            }
+        ],
+        "security": {
+            "csp": null
+        }
+    },
+    "bundle": {
+        "active": true,
+        "targets": ["nsis", "appimage", "deb", "rpm"],
+        "externalBin": [
+            "binaries/rokit",
+            "binaries/argon",
+            "binaries/rojo",
+            "binaries/luau-lsp"
+        ],
+        "resources": [
+            "resources/globalTypes.PluginSecurity.d.luau",
+            "resources/testez.d.luau"
+        ],
+        "icon": [
+            "icons/32x32.png",
+            "icons/128x128.png",
+            "icons/128x128@2x.png",
+            "icons/icon.icns",
+            "icons/icon.ico"
+        ],
+        "windows": {
+            "nsis": {
+                "installMode": "perMachine"
+            }
+        }
+    }
+}

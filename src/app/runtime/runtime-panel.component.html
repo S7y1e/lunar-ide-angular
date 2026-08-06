@@ -1,0 +1,60 @@
+<div class="runtime">
+    <div class="header">
+        <span class="title">Runtime</span>
+        <span class="statusRow">
+            <span class="chip" [class.on]="bridge.running()" [class.off]="!bridge.running()">
+                {{ bridge.running() ? 'Listening · :' + bridge.port() : 'Offline' }}
+            </span>
+            @if (bridge.playtest()) {
+                <span class="chip play">▶ Play-test</span>
+            }
+            <button class="clear" title="Clear output" (click)="bridge.clear()">🗑</button>
+        </span>
+    </div>
+
+    <div class="filterBar">
+        <input
+            class="filterInput"
+            placeholder="Filter output…"
+            [value]="filter()"
+            (input)="filter.set($any($event.target).value)"
+        />
+        <button class="filterToggle" [class.active]="hideNoise()" title="Hide engine noise" (click)="hideNoise.set(!hideNoise())">
+            🔽 Noise
+        </button>
+        @if (hidden() > 0) {
+            <span class="hiddenCount">{{ hidden() }} hidden</span>
+        }
+    </div>
+
+    <div class="evalBar">
+        <span class="evalPrompt">&gt;</span>
+        <input
+            class="evalInput"
+            [placeholder]="bridge.running() ? 'Lua expression…' : 'Connect plugin to eval'"
+            [disabled]="!bridge.running()"
+            spellcheck="false"
+            [value]="evalInput()"
+            (input)="evalInput.set($any($event.target).value)"
+            (keydown.enter)="submitEval()"
+        />
+    </div>
+
+    <div class="logs">
+        @if (bridge.messages().length === 0) {
+            <div class="empty">No runtime output. Connect the Lunar Studio plugin and run a play-test.</div>
+        } @else if (grouped().length === 0) {
+            <div class="empty">All {{ bridge.messages().length }} lines hidden by filter.</div>
+        } @else {
+            @for (entry of grouped(); track $index) {
+                @if (entry.kind === 'error-group') {
+                    <app-error-card [group]="entry" />
+                } @else {
+                    <div class="logLine {{ entry.type }}">
+                        <app-runtime-line [text]="entry.text" />
+                    </div>
+                }
+            }
+        }
+    </div>
+</div>

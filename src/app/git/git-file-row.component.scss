@@ -1,0 +1,47 @@
+.fileRow {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: 22px;
+}
+.code {
+    width: 14px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 11px;
+}
+.cAdd { color: var(--success); }
+.cDel { color: var(--danger); }
+.cMod { color: var(--warning); }
+.cUnt { color: var(--muted); }
+.fileName {
+    flex: 1;
+    display: flex;
+    gap: 6px;
+    align-items: baseline;
+    min-width: 0;
+    border: none;
+    background: transparent;
+    color: var(--text);
+    text-align: left;
+    cursor: pointer;
+    padding: 0;
+}
+.dir {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--muted);
+    font-size: 10px;
+}
+.act {
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 13px;
+    padding: 2px 4px;
+}
+.act:hover {
+    color: var(--text);
+}

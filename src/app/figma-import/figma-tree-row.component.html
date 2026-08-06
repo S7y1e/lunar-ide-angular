@@ -1,0 +1,25 @@
+<div
+    class="treeRow"
+    [class.treeRowSelected]="isSelected()"
+    [class.treeRowExcluded]="isExcluded()"
+    [style.paddingLeft.px]="6 + depth() * 14"
+    (click)="onRowClick($event)"
+>
+    <span class="treeArrow" (click)="onArrowClick($event)">
+        @if (hasChildren()) {
+            {{ isCollapsed() ? '▸' : '▾' }}
+        } @else {
+            <span style="display: inline-block; width: 11px"></span>
+        }
+    </span>
+    <span class="treeCls" [attr.data-cls]="cls()">{{ cls() }}</span>
+    <span class="treeName">{{ n().name }}</span>
+    <button class="treeEye" (click)="onEyeClick($event)" [title]="isExcluded() ? 'Include' : 'Exclude'">
+        {{ isExcluded() ? '🚫' : '👁' }}
+    </button>
+</div>
+@if (!isCollapsed()) {
+    @for (child of n().children; track child.id) {
+        <app-figma-tree-row [n]="child" [depth]="depth() + 1" [ctx]="ctx()" />
+    }
+}

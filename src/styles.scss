@@ -1,1 +1,77 @@
-/* You can add global styles to this file, and also import other style files */
+@use "@fontsource/inter/400.css" as *;
+@use "@fontsource/inter/500.css" as *;
+@use "@fontsource/inter/600.css" as *;
+@use "@fontsource/jetbrains-mono/400.css" as *;
+@use "@fontsource/jetbrains-mono/500.css" as *;
+@use "./styles/themes.scss" as *;
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: var(--bg-window);
+    font-family: "Inter", system-ui, sans-serif;
+}
+
+/*
+ * UI scale: nearly every SCSS module in this app hardcodes pixel sizes, so a
+ * rem-based zoom isn't a quick change. Instead, app-root is scaled visually and
+ * its box size compensated by the inverse factor, so layout still reflows as
+ * if unscaled — only the final paint is bigger or smaller. --ui-scale is set
+ * from core/ui-scale.ts (lunar.ui.scale setting).
+ */
+app-root {
+    display: block;
+    height: calc(100% / var(--ui-scale, 1));
+    width: calc(100% / var(--ui-scale, 1));
+    transform: scale(var(--ui-scale, 1));
+    transform-origin: top left;
+    overflow: hidden;
+    background: var(--bg-window);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+}
+
+::selection {
+    background: color-mix(in srgb, var(--accent) 35%, transparent);
+    color: var(--text-bright);
+}
+
+button:not(:disabled):active {
+    filter: brightness(0.85);
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: color-mix(in srgb, var(--icon) 35%, transparent);
+    border: 2px solid transparent;
+    border-radius: 6px;
+    background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: color-mix(in srgb, var(--icon) 55%, transparent);
+    border: 2px solid transparent;
+    background-clip: padding-box;
+}
+
+::-webkit-scrollbar-corner {
+    background: transparent;
+}

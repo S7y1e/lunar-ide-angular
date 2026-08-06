@@ -1,0 +1,12 @@
+:host {
+    display: contents;
+}
+.link {
+    color: var(--accent);
+    cursor: pointer;
+    text-decoration: underline;
+}
+.unresolved {
+    color: var(--warning);
+    text-decoration: underline dotted;
+}

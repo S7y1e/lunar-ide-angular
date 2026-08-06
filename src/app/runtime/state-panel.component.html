@@ -1,0 +1,34 @@
+<div class="state">
+    <div class="header">
+        <span class="title">State</span>
+        <span class="statusRow">
+            @if (bridge.playtest()) {
+                <span class="chip play">▶ Play-test</span>
+            }
+            <span class="chip" [class.on]="bridge.running()" [class.off]="!bridge.running()">
+                {{ bridge.running() ? 'Listening · :' + bridge.port() : 'Offline' }}
+            </span>
+            <button class="clear" [class.active]="showGuide()" title="How to use" (click)="showGuide.set(!showGuide())">?</button>
+            <button class="clear" title="Clear watches" (click)="inspector.clear()">🗑</button>
+        </span>
+    </div>
+
+    <div class="tree">
+        @if (showGuide() || inspector.watches().length === 0) {
+            <app-state-guide />
+        } @else {
+            @for (w of inspector.watches(); track w.name) {
+                <app-state-tree-node
+                    [label]="w.name"
+                    [value]="w.snapshot"
+                    [path]="w.name"
+                    [depth]="0"
+                    [seq]="w.changeSeq"
+                    [changes]="w.changes"
+                    [expanded]="expanded()"
+                    (toggle)="toggle($event)"
+                />
+            }
+        }
+    </div>
+</div>

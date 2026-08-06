@@ -1,0 +1,56 @@
+@if (palette.isOpen()) {
+    <div class="paletteOverlay" (click)="palette.close()">
+        <div class="palette" (click)="$event.stopPropagation()">
+            <app-palette-tabs [scope]="palette.effScope()" (select)="palette.selectScope($event)" />
+
+            <input
+                class="paletteInput"
+                autofocus
+                spellcheck="false"
+                [placeholder]="placeholder[palette.effScope()]"
+                [value]="palette.query()"
+                (input)="palette.setQuery($any($event.target).value)"
+                (keydown)="onKeyDown($event)"
+            />
+
+            <div class="paletteResults">
+                @for (item of palette.items(); track itemKey(item, $index); let i = $index) {
+                    <div
+                        class="paletteItem"
+                        [class.paletteItemActive]="i === palette.active()"
+                        (mouseenter)="palette.active.set(i)"
+                        (click)="choose(i)"
+                    >
+                        @switch (item.kind) {
+                            @case ('symbol') {
+                                <span class="paletteName">{{ item.symbol.container }}.{{ item.symbol.name }}</span>
+                                <span class="palettePath">{{ item.symbol.file }}:{{ item.symbol.line }}</span>
+                            }
+                            @case ('text') {
+                                <span class="paletteName">{{ textPreview(item.match.text) }}</span>
+                                <span class="palettePath">{{ item.match.file }}:{{ item.match.line }}</span>
+                            }
+                            @case ('command') {
+                                <span class="paletteName">{{ item.command.title }}</span>
+                                @if (item.command.hint) {
+                                    <span class="palettePath">{{ item.command.hint }}</span>
+                                }
+                            }
+                            @default {
+                                <span class="icon">📄</span>
+                                <span class="paletteName">
+                                    @if (highlightSegments(item.file.name, palette.query().trim()); as seg) {
+                                        {{ seg.pre }}<mark>{{ seg.match }}</mark>{{ seg.post }}
+                                    } @else {
+                                        {{ item.file.name }}
+                                    }
+                                </span>
+                                <span class="palettePath">{{ item.file.relativePath }}</span>
+                            }
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}

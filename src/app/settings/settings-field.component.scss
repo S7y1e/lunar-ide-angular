@@ -1,0 +1,143 @@
+.field {
+    display: flex;
+    align-items: flex-start;
+    gap: 32px;
+    max-width: 880px;
+    padding: 16px 4px;
+    border-bottom: 1px solid color-mix(in srgb, var(--divider) 55%, transparent);
+}
+
+.field:hover .fieldKey {
+    opacity: 1;
+}
+
+.fieldStacked {
+    flex-direction: column;
+    gap: 12px;
+}
+
+.fieldStacked .fieldControl {
+    width: 100%;
+    align-items: stretch;
+}
+
+.fieldInfo {
+    flex: 1;
+    min-width: 0;
+}
+
+.fieldControl {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    padding-top: 1px;
+}
+
+.fieldHead {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.fieldLabel {
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.fieldBadge {
+    padding: 1px 7px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--accent) 18%, transparent);
+    color: var(--accent);
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.fieldKey {
+    display: inline-block;
+    margin-top: 6px;
+    color: var(--muted);
+    font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+    opacity: 0.55;
+    transition: opacity 0.12s;
+    user-select: text;
+}
+
+.fieldReset {
+    background: transparent;
+    border: none;
+    padding: 0;
+    color: var(--accent);
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.fieldReset:hover {
+    text-decoration: underline;
+}
+
+.fieldDesc {
+    margin: 5px 0 0;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.55;
+}
+
+.input,
+.select {
+    box-sizing: border-box;
+    min-width: 280px;
+    padding: 6px 9px;
+    background: var(--bar);
+    border: 1px solid var(--divider);
+    border-radius: 6px;
+    color: var(--text);
+    font-size: 13px;
+    outline: none;
+}
+
+.input:focus,
+.select:focus {
+    border-color: var(--focus);
+}
+
+.number {
+    min-width: 120px;
+}
+
+.toggle {
+    position: relative;
+    width: 36px;
+    height: 20px;
+    padding: 0;
+    background: var(--hover);
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.toggleOn {
+    background: var(--accent);
+}
+
+.toggleKnob {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    background: #fff;
+    border-radius: 50%;
+    transition: transform 0.15s;
+}
+
+.toggleOn .toggleKnob {
+    transform: translateX(16px);
+}

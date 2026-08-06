@@ -1,0 +1,13 @@
+.nodeInput {
+    flex: 1;
+    min-width: 0;
+    box-sizing: border-box;
+    height: 18px;
+    padding: 0 4px;
+    background: var(--bar);
+    border: 1px solid var(--focus);
+    border-radius: 3px;
+    color: var(--text-bright);
+    font-size: 13px;
+    outline: none;
+}

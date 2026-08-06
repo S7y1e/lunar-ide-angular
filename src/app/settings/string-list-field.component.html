@@ -1,0 +1,9 @@
+<div class="list">
+    @for (value of values(); track $index) {
+        <div class="listRow">
+            <input class="input" [value]="value" (input)="update($index, $any($event.target).value)" />
+            <button class="removeBtn" (click)="remove($index)" aria-label="Remove">✕</button>
+        </div>
+    }
+    <button class="addBtn" (click)="add()">Add item</button>
+</div>

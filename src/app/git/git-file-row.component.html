@@ -1,0 +1,13 @@
+<div class="fileRow">
+    <span class="code {{ codeClass(code()) }}">{{ statusLabel[code()] ?? '?' }}</span>
+    <button class="fileName" [title]="file().path" (click)="editorGroups.openFileAt(file().path)">
+        {{ baseName(file().path) }}
+        <span class="dir">{{ file().path }}</span>
+    </button>
+    @if (staged()) {
+        <button class="act" title="Unstage" (click)="git.unstage(file().path)">−</button>
+    } @else {
+        <button class="act" title="Discard" (click)="git.discard(file().path)">⨯</button>
+        <button class="act" title="Stage" (click)="git.stage(file().path)">+</button>
+    }
+</div>

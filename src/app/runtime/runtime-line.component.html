@@ -1,0 +1,13 @@
+@for (seg of segments(); track $index) {
+    @switch (seg.kind) {
+        @case ('link') {
+            <span class="link" [title]="'Open ' + seg.dotPath" (click)="open(seg.dotPath)">{{ seg.text }}</span>
+        }
+        @case ('unresolved') {
+            <span class="unresolved" [title]="seg.dotPath + ' isn\'t in the open project — is the matching project open?'">{{ seg.text }}</span>
+        }
+        @default {
+            {{ seg.text }}
+        }
+    }
+}

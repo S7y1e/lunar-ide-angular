@@ -1,0 +1,48 @@
+<div class="sidebar">
+    <div class="header">
+        <span class="title">📊 Profiler</span>
+        <div class="controls">
+            <select class="select" [value]="seconds()" [disabled]="sampling()" (change)="seconds.set(+$any($event.target).value)">
+                @for (d of durations; track d) {
+                    <option [value]="d">{{ d }}s</option>
+                }
+            </select>
+            <button class="sampleBtn" [disabled]="sampling()" title="Sample runtime stats from Studio" (click)="run()">
+                ▶ {{ sampling() ? 'Sampling…' : 'Sample' }}
+            </button>
+        </div>
+    </div>
+
+    <div class="body">
+        @if (!last()) {
+            <div class="empty">
+                📈 Sample memory &amp; frame time from Studio via the bridge. Make sure the Lunar
+                plugin is connected, then press Sample.
+            </div>
+        } @else {
+            <div class="stats">
+                <div class="stat">
+                    <span class="statValue">{{ last()!.mem.toFixed(1) }}</span>
+                    <span class="statUnit">MB total</span>
+                    <span class="statSpark"><app-sparkline [values]="memSeries()" /></span>
+                </div>
+                <div class="stat">
+                    <span class="statValue">{{ last()!.hb.toFixed(2) }}</span>
+                    <span class="statUnit">ms heartbeat</span>
+                    <span class="statSpark"><app-sparkline [values]="hbSeries()" /></span>
+                </div>
+            </div>
+
+            <div class="section">Memory by category (MB)</div>
+            @for (cat of cats(); track cat[0]) {
+                <div class="catRow">
+                    <span class="catName" [title]="cat[0]">{{ cat[0] }}</span>
+                    <span class="barTrack">
+                        <span class="barFill" [style.width.%]="(cat[1] / maxCat()) * 100"></span>
+                    </span>
+                    <span class="catVal">{{ cat[1].toFixed(1) }}</span>
+                </div>
+            }
+        }
+    </div>
+</div>

@@ -1,0 +1,19 @@
+.paletteTabs {
+    display: flex;
+    gap: 4px;
+    padding: 8px 10px 0;
+}
+.paletteTab {
+    font-size: 11px;
+    color: var(--muted);
+    padding: 3px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.paletteTab:hover {
+    background: var(--hover);
+}
+.paletteTab.paletteTabActive {
+    background: var(--selected);
+    color: var(--text-bright);
+}

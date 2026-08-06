@@ -1,0 +1,56 @@
+.treeRow {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    height: 22px;
+    padding-right: 8px;
+    padding-left: 8px;
+    color: var(--text);
+    font-size: 13px;
+    line-height: 22px;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+}
+
+.treeRow:hover {
+    background: var(--hover);
+}
+
+.treeRow.selected {
+    background: var(--selected);
+}
+
+.treeRow.selected:hover {
+    background: var(--selected-hover);
+}
+
+.chevronSpacer {
+    flex-shrink: 0;
+    width: 16px;
+}
+
+.icon {
+    flex-shrink: 0;
+    font-size: 12px;
+}
+
+.nodeName {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.filterPath {
+    margin-left: 8px;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.filterEmpty {
+    padding: 8px 12px;
+    color: var(--muted);
+    font-size: 12px;
+}

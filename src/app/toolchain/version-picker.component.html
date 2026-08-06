@@ -1,0 +1,20 @@
+<div class="versionPicker">
+    <button class="versionBtn" [disabled]="disabled()" (click)="toggle()">
+        {{ current() || 'latest' }} ▾
+    </button>
+    @if (open()) {
+        <div class="versionMenu">
+            @if (loading()) {
+                <div class="hint">Loading…</div>
+            } @else if (versions() && versions()!.length > 0) {
+                @for (v of versions(); track v) {
+                    <button class="item" [class.current]="v === current()" (click)="pick(v)">
+                        {{ v }}
+                    </button>
+                }
+            } @else {
+                <div class="hint">No versions found</div>
+            }
+        </div>
+    }
+</div>

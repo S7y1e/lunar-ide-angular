@@ -1,0 +1,139 @@
+.panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--bg-chrome);
+    font-size: 12px;
+}
+.header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--divider);
+    font-weight: 600;
+}
+.branch {
+    margin-left: auto;
+    font-weight: 400;
+    color: var(--muted);
+    font-size: 11px;
+}
+.error {
+    padding: 6px 10px;
+    color: var(--danger);
+    font-size: 11px;
+}
+.empty {
+    padding: 12px 10px;
+    color: var(--muted);
+}
+.body {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+}
+.tabs {
+    display: flex;
+    border-bottom: 1px solid var(--divider);
+}
+.tabs button {
+    flex: 1;
+    padding: 6px 0;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    font-size: 11px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+}
+.tabs button:hover {
+    color: var(--text);
+}
+.tabs button.tabOn {
+    color: var(--text);
+    border-bottom-color: var(--accent);
+}
+.graphBtn {
+    flex: 0 !important;
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    padding: 2px 8px !important;
+    border-bottom: none !important;
+}
+.detail {
+    border-top: 1px solid var(--divider);
+    padding: 8px 0 0;
+    flex-shrink: 0;
+}
+.detailHash {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+}
+.detailSubject {
+    font-size: 12px;
+    color: var(--text);
+    margin: 2px 0;
+}
+.detailMeta {
+    font-size: 11px;
+    color: var(--muted);
+}
+.commitBox {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 10px;
+}
+.msg {
+    resize: none;
+    background: var(--bg-window);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
+    font-size: 12px;
+    padding: 6px;
+    font-family: inherit;
+}
+.commitBtn {
+    border: none;
+    border-radius: 4px;
+    background: var(--accent);
+    color: white;
+    padding: 6px;
+    cursor: pointer;
+    font-size: 12px;
+}
+.commitBtn:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+.section {
+    margin-bottom: 10px;
+}
+.sectionHead {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 4px;
+}
+.count {
+    font-weight: 400;
+}
+.stageAll {
+    margin-left: auto;
+    border: none;
+    background: transparent;
+    color: var(--accent);
+    cursor: pointer;
+    font-size: 11px;
+}

@@ -1,0 +1,16 @@
+<div class="sidebar">
+    <div class="header">
+        <span class="title">🏛 Structure</span>
+    </div>
+    <div class="body">
+        @if (!editorGroups.activeFile()) {
+            <div class="empty">Open a file to see its structure.</div>
+        } @else if (structure.symbols().length === 0) {
+            <div class="empty">No symbols.</div>
+        } @else {
+            @for (symbol of structure.symbols(); track $index) {
+                <app-structure-node [symbol]="symbol" [depth]="0" (goTo)="onGoTo($event)" />
+            }
+        }
+    </div>
+</div>

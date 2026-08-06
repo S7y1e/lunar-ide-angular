@@ -1,0 +1,28 @@
+<div class="row" (click)="onRowClick()">
+    @if (kind(); as k) {
+        <span class="flash {{ k }}"></span>
+    }
+    <span class="indent" [style.width.px]="depth() * 12"></span>
+    @if (hasChildren()) {
+        <span class="chevron" [class.chevronOpen]="open()">▸</span>
+    } @else {
+        <span class="chevronSpacer"></span>
+    }
+    <span class="key">{{ label() }}</span>
+    <span class="value {{ branch(value()) ? '' : valueClass(value()) }}">{{ preview(value()) }}</span>
+</div>
+
+@if (open() && hasChildren()) {
+    @for (entry of entries(value()); track entry[0]) {
+        <app-state-tree-node
+            [label]="entry[0]"
+            [value]="entry[1]"
+            [path]="childPath(entry[0])"
+            [depth]="depth() + 1"
+            [seq]="seq()"
+            [changes]="changes()"
+            [expanded]="expanded()"
+            (toggle)="toggle.emit($event)"
+        />
+    }
+}

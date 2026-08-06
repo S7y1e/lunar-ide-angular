@@ -1,0 +1,23 @@
+@if (commits().length === 0) {
+    <div class="empty">No commits</div>
+} @else {
+    <div class="graphScroll">
+        <svg [attr.width]="width()" [attr.height]="height()" class="graph">
+            @for (e of edges(); track e.key) {
+                <path [attr.d]="e.d" fill="none" [attr.stroke]="e.color" stroke-width="2" opacity="0.85" />
+            }
+            @for (n of nodes(); track n.hash) {
+                <g class="nodeG" (click)="select.emit(n.hash)">
+                    <title>{{ n.title }}</title>
+                    <circle [attr.cx]="n.x" [attr.cy]="n.y" [attr.r]="n.r" [attr.fill]="n.color" [attr.stroke]="n.stroke" stroke-width="2" />
+                    @for (ref of n.refs; track ref.text) {
+                        <g [attr.transform]="'translate(' + ref.x + ', ' + ref.y + ')'">
+                            <rect x="-2" y="-9" [attr.width]="ref.width" height="13" rx="3" class="refChip" />
+                            <text x="2" y="1" class="refText">{{ ref.text }}</text>
+                        </g>
+                    }
+                </g>
+            }
+        </svg>
+    </div>
+}

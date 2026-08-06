@@ -1,0 +1,106 @@
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--bg-chrome);
+    font-size: 12px;
+}
+.header {
+    display: flex;
+    align-items: center;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--divider);
+    font-weight: 600;
+}
+.headerBtn {
+    margin-left: auto;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+}
+.headerBtn:hover {
+    color: var(--text);
+}
+.empty {
+    padding: 12px 10px;
+    color: var(--muted);
+}
+.body {
+    flex: 1;
+    overflow: auto;
+    padding: 8px;
+}
+.flow {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--divider);
+    flex-wrap: wrap;
+}
+.side {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 60px;
+}
+.none {
+    color: var(--muted);
+    font-size: 10px;
+}
+.fileBox {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: transparent;
+    color: var(--text);
+    font-size: 10px;
+    padding: 2px 6px;
+    cursor: pointer;
+    text-align: left;
+}
+.fileBox:hover {
+    background: var(--hover);
+}
+.arrow {
+    color: var(--muted);
+    flex: none;
+}
+.signalNode {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    border: 1px solid;
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 11px;
+}
+.kind {
+    font-size: 9px;
+    color: var(--muted);
+}
+.section {
+    padding: 8px 0 4px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+}
+.unresolved {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    border: none;
+    background: transparent;
+    color: var(--warning);
+    font-size: 11px;
+    padding: 3px 0;
+    cursor: pointer;
+    text-align: left;
+}
+.from {
+    margin-left: auto;
+    color: var(--muted);
+}

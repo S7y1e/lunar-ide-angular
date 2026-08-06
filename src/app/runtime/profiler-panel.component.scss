@@ -1,0 +1,115 @@
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--bg-chrome);
+    font-size: 12px;
+}
+.header {
+    display: flex;
+    align-items: center;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--divider);
+    font-weight: 600;
+}
+.controls {
+    margin-left: auto;
+    display: flex;
+    gap: 6px;
+}
+.select {
+    background: var(--bg-window);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
+    font-size: 11px;
+}
+.sampleBtn {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: transparent;
+    color: var(--text);
+    font-size: 11px;
+    padding: 3px 8px;
+    cursor: pointer;
+}
+.sampleBtn:hover {
+    background: var(--hover);
+}
+.sampleBtn:disabled {
+    opacity: 0.6;
+    cursor: default;
+}
+.body {
+    flex: 1;
+    overflow: auto;
+    padding: 10px;
+}
+.empty {
+    color: var(--muted);
+    text-align: center;
+    padding-top: 20px;
+}
+.stats {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+.stat {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px;
+}
+.statValue {
+    font-size: 18px;
+    font-weight: 700;
+}
+.statUnit {
+    font-size: 10px;
+    color: var(--muted);
+}
+.statSpark {
+    height: 30px;
+    margin-top: 6px;
+}
+.section {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+}
+.catRow {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: 20px;
+    font-size: 11px;
+}
+.catName {
+    width: 100px;
+    flex: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.barTrack {
+    flex: 1;
+    height: 6px;
+    background: var(--disabled);
+    border-radius: 3px;
+    overflow: hidden;
+}
+.barFill {
+    display: block;
+    height: 100%;
+    background: var(--accent);
+}
+.catVal {
+    width: 36px;
+    text-align: right;
+    color: var(--muted);
+}

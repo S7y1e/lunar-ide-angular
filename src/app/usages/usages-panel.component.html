@@ -1,0 +1,36 @@
+<div class="sidebar">
+    <div class="header">{{ usages.isRequirers() ? '📋 Requirers' : '📋 Usages' }}</div>
+
+    <div class="summary">
+        @if (!usages.target()) {
+            Put the cursor on a member and run "Find Usages".
+        } @else if (usages.loading()) {
+            Searching…
+        } @else if (usages.isRequirers()) {
+            {{ total() }} module{{ total() === 1 ? '' : 's' }} require this
+        } @else {
+            {{ usages.member() }}: {{ total() }} usage{{ total() === 1 ? '' : 's' }} in {{ groups().length }} file{{ groups().length === 1 ? '' : 's' }}
+        }
+    </div>
+
+    <div class="body">
+        @if (usages.target() && !usages.loading() && total() === 0) {
+            <div class="empty">{{ usages.isRequirers() ? 'No modules require this.' : 'No usages found.' }}</div>
+        }
+        @for (group of groups(); track group.file) {
+            <div class="group">
+                <div class="fileHead" [title]="group.file">
+                    <span class="fileName">{{ baseName(group.file) }}</span>
+                    <span class="filePath">{{ group.file }}</span>
+                    <span class="count">{{ group.items.length }}</span>
+                </div>
+                @for (u of group.items; track $index) {
+                    <button class="match" [title]="group.file + ':' + u.line" (click)="openAt(u)">
+                        <span class="line">{{ u.line }}</span>
+                        <span class="preview">{{ u.text.trim() }}</span>
+                    </button>
+                }
+            </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,78 @@
+.statusBar {
+    display: flex;
+    align-items: center;
+    height: 22px;
+    flex-shrink: 0;
+    padding: 0 6px;
+    background: var(--bar);
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--muted);
+    user-select: none;
+}
+
+.item {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    height: 100%;
+    padding: 0 6px;
+    border: none;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.item:hover {
+    background: var(--hover);
+}
+
+.project {
+    padding: 0 6px;
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 220px;
+}
+
+.cursor {
+    margin-left: auto;
+    padding: 0 6px;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+}
+
+.running {
+    color: var(--success);
+}
+
+.warning {
+    color: var(--warning);
+}
+
+.error {
+    color: var(--danger);
+}
+
+.stopped {
+    color: var(--muted);
+}
+
+.icon {
+    display: inline-flex;
+    font-size: 12px;
+    line-height: 1;
+}
+
+.icon.spin {
+    animation: statusSpin 2s linear infinite;
+}
+
+@keyframes statusSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}

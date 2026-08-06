@@ -1,0 +1,49 @@
+:host {
+    display: block;
+}
+.treeRow {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    height: 22px;
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--text);
+}
+.treeRow:hover {
+    background: var(--hover);
+}
+.treeRow.selected {
+    background: var(--selected);
+}
+.indent {
+    flex: none;
+}
+.chevron {
+    flex: none;
+    width: 12px;
+    font-size: 10px;
+    color: var(--muted);
+    transition: transform 0.1s;
+}
+.chevron.chevronOpen {
+    transform: rotate(90deg);
+}
+.chevronSpacer {
+    width: 12px;
+    flex: none;
+}
+.icon {
+    font-size: 12px;
+}
+.nodeName {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.className {
+    color: var(--muted);
+    font-size: 10px;
+    margin-left: auto;
+    padding-right: 6px;
+}

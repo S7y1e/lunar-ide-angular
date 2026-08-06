@@ -1,0 +1,83 @@
+<div class="panel">
+    <div class="header">
+        <span>🌿 Git</span>
+        @if (git.status(); as s) {
+            <span class="branch">
+                📦 {{ s.branch }}
+                @if (s.ahead > 0) { ↑{{ s.ahead }} }
+                @if (s.behind > 0) { ↓{{ s.behind }} }
+            </span>
+        }
+    </div>
+
+    @if (git.isRepo() === false) {
+        <div class="empty">Not a git repository.</div>
+    } @else {
+        <div class="tabs">
+            <button [class.tabOn]="tab() === 'changes'" (click)="tab.set('changes')">Changes</button>
+            <button [class.tabOn]="tab() === 'graph'" (click)="tab.set('graph')">Graph</button>
+            <button class="graphBtn" title="Open graph in editor" (click)="graphUi.open.set(true)">⛶</button>
+        </div>
+
+        @if (git.error(); as e) {
+            <div class="error">{{ e }}</div>
+        }
+
+        @if (tab() === 'changes') {
+            <div class="body">
+                <div class="commitBox">
+                    <textarea
+                        class="msg"
+                        placeholder="Commit message"
+                        rows="2"
+                        [value]="message()"
+                        (input)="message.set($any($event.target).value)"
+                    ></textarea>
+                    <button
+                        class="commitBtn"
+                        [disabled]="!message().trim() || staged().length === 0"
+                        (click)="onCommit()"
+                    >
+                        Commit @if (staged().length > 0) { ({{ staged().length }}) }
+                    </button>
+                </div>
+
+                @if (staged().length > 0) {
+                    <div class="section">
+                        <div class="sectionHead">Staged <span class="count">{{ staged().length }}</span></div>
+                        @for (f of staged(); track f.path) {
+                            <app-git-file-row [file]="f" [staged]="true" />
+                        }
+                    </div>
+                }
+
+                <div class="section">
+                    <div class="sectionHead">
+                        Changes <span class="count">{{ unstaged().length }}</span>
+                        @if (unstaged().length > 0) {
+                            <button class="stageAll" (click)="git.stageAll()">Stage all</button>
+                        }
+                    </div>
+                    @if (unstaged().length === 0) {
+                        <div class="empty">Working tree clean.</div>
+                    } @else {
+                        @for (f of unstaged(); track f.path) {
+                            <app-git-file-row [file]="f" [staged]="false" />
+                        }
+                    }
+                </div>
+            </div>
+        } @else {
+            <div class="body">
+                <app-git-graph [commits]="git.commits()" [selected]="selected()" (select)="selected.set($event)" />
+                @if (detail(); as d) {
+                    <div class="detail">
+                        <div class="detailHash">{{ d.short }}</div>
+                        <div class="detailSubject">{{ d.subject }}</div>
+                        <div class="detailMeta">{{ d.author }}</div>
+                    </div>
+                }
+            </div>
+        }
+    }
+</div>

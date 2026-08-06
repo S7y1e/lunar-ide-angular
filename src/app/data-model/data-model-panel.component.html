@@ -1,0 +1,24 @@
+<div class="sidebar">
+    <div class="header">
+        <span class="title">🗂 DataModel</span>
+        <button class="headerBtn" title="Collapse All" (click)="collapseAll()">⤴</button>
+    </div>
+
+    <div class="tree">
+        @if (dataModel.tree(); as tree) {
+            <app-data-model-tree-node
+                [node]="tree"
+                [chain]="[tree.name]"
+                [depth]="0"
+                [expanded]="expanded()"
+                [selected]="selected()"
+                (toggle)="toggle($event)"
+                (select)="selected.set($event)"
+            />
+        } @else {
+            <div class="empty">
+                {{ dataModel.loading() ? 'Loading…' : 'No sourcemap yet — open a Rojo/Argon project to see its DataModel.' }}
+            </div>
+        }
+    </div>
+</div>

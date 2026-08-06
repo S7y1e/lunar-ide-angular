@@ -1,0 +1,33 @@
+<div class="topbar" data-tauri-drag-region>
+    <div class="left">
+        <span class="logo">L</span>
+        <div class="menu">
+            <button class="menuButton" (click)="fileOpen.set(!fileOpen())">File</button>
+            @if (fileOpen()) {
+                <div class="dropdown">
+                    <button class="item" (click)="openFolder()">Open Folder</button>
+                    <div class="item submenuParent" (mouseenter)="loadRecent()">
+                        Open Recent ›
+                        <div class="submenu">
+                            @if (recent().length === 0) {
+                                <span class="empty">No recent projects</span>
+                            }
+                            @for (p of recent(); track p.path) {
+                                <button class="item" (click)="openRecent(p.path)">{{ p.name }}</button>
+                            }
+                        </div>
+                    </div>
+                    <button class="item" [disabled]="!project.root()" (click)="closeProject()">
+                        Close Project
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="controls">
+        <button class="control" title="Minimize" (click)="minimize()">─</button>
+        <button class="control" title="Maximize" (click)="maximize()">□</button>
+        <button class="control close" title="Close" (click)="closeWindow()">✕</button>
+    </div>
+</div>

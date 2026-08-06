@@ -1,0 +1,29 @@
+<div class="treeRow" [class.selected]="isSelected()" [title]="node().className" (click)="onRowClick()">
+    <span class="indent" [style.width.px]="depth() * 12"></span>
+
+    @if (hasChildren()) {
+        <span class="chevron" [class.chevronOpen]="isOpen()" (click)="onChevronClick($event)">▸</span>
+    } @else {
+        <span class="chevronSpacer"></span>
+    }
+
+    <span class="icon">{{ hasChildren() ? '📁' : '📄' }}</span>
+    <span class="nodeName">{{ node().name }}</span>
+    @if (showClass()) {
+        <span class="className">{{ node().className }}</span>
+    }
+</div>
+
+@if (isOpen()) {
+    @for (child of node().children; track child.name + child.className + $index) {
+        <app-data-model-tree-node
+            [node]="child"
+            [chain]="childChain(child.name)"
+            [depth]="depth() + 1"
+            [expanded]="expanded()"
+            [selected]="selected()"
+            (toggle)="toggle.emit($event)"
+            (select)="select.emit($event)"
+        />
+    }
+}

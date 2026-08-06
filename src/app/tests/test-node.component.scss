@@ -1,0 +1,52 @@
+:host {
+    display: block;
+}
+.row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: 22px;
+    font-size: 12px;
+}
+.status {
+    width: 14px;
+    text-align: center;
+    font-weight: 700;
+}
+.status.success {
+    color: var(--success);
+}
+.status.failure {
+    color: var(--danger);
+}
+.status.skipped {
+    color: var(--muted);
+}
+.phrase {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.errorBlock {
+    padding-block: 2px 6px;
+}
+.errorMsg {
+    color: var(--danger);
+    font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+    white-space: pre-wrap;
+}
+.frame {
+    display: block;
+    border: none;
+    background: transparent;
+    color: var(--accent);
+    font-size: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    cursor: pointer;
+    padding: 1px 0;
+    text-align: left;
+}
+.frame:hover {
+    text-decoration: underline;
+}

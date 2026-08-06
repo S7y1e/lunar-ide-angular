@@ -1,0 +1,74 @@
+<div class="sidebar">
+    <div class="header">🔍 Search</div>
+
+    <div class="row">
+        <input
+            class="input"
+            placeholder="Search in project"
+            spellcheck="false"
+            [value]="find.query()"
+            (input)="find.setQuery($any($event.target).value)"
+        />
+        <button
+            class="toggle"
+            [class.on]="find.caseSensitive()"
+            [attr.aria-pressed]="find.caseSensitive()"
+            title="Match case"
+            (click)="find.toggleCaseSensitive()"
+        >
+            Aa
+        </button>
+    </div>
+
+    <div class="row">
+        <input
+            class="input"
+            placeholder="Replace with"
+            spellcheck="false"
+            [value]="replace()"
+            (input)="replace.set($any($event.target).value)"
+            (keydown.enter)="runReplace()"
+        />
+        <button
+            class="toggle"
+            title="Replace all"
+            [disabled]="replacing() || !find.results() || find.results()!.matches.length === 0"
+            (click)="runReplace()"
+        >
+            ⇄
+        </button>
+    </div>
+
+    <div class="summary">
+        @if (find.query().trim() === '') {
+            Type to search across the project.
+        } @else if (find.loading()) {
+            Searching…
+        } @else {
+            {{ total() }} result{{ total() === 1 ? '' : 's' }} in {{ groups().length }} file{{ groups().length === 1 ? '' : 's' }}
+            @if (find.results()?.truncated) { (truncated) }
+        }
+    </div>
+
+    <div class="body">
+        @for (group of groups(); track group.file) {
+            <div class="group">
+                <div class="fileHead" [title]="group.file">
+                    <span class="fileName">{{ baseName(group.file) }}</span>
+                    <span class="filePath">{{ group.file }}</span>
+                    <span class="count">{{ group.matches.length }}</span>
+                </div>
+                @for (match of group.matches; track $index) {
+                    <button
+                        class="match"
+                        [title]="group.file + ':' + match.line"
+                        (click)="open(match)"
+                    >
+                        <span class="line">{{ match.line }}</span>
+                        <span class="preview">{{ match.text.trim() }}</span>
+                    </button>
+                }
+            </div>
+        }
+    </div>
+</div>

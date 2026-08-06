@@ -1,0 +1,25 @@
+<div class="overlay">
+    <div class="overlayHead">
+        <span>🌿 Git Graph</span>
+        @if (git.status(); as s) {
+            <span class="overlayBranch">{{ s.branch }}</span>
+        }
+        <span class="count">{{ git.commits().length }} commits</span>
+        <button class="overlayClose" (click)="close.emit()" title="Close (Esc)">✕</button>
+    </div>
+    <div class="overlayBody">
+        <app-git-graph [commits]="git.commits()" [selected]="selected()" (select)="selected.set($event)" />
+    </div>
+    @if (detail(); as d) {
+        <div class="detail">
+            <div class="detailHash">{{ d.short }}</div>
+            <div class="detailSubject">{{ d.subject }}</div>
+            <div class="detailMeta">
+                {{ d.author }}
+                @if (d.refs.length > 0) {
+                    · {{ d.refs.join(', ') }}
+                }
+            </div>
+        </div>
+    }
+</div>

@@ -1,0 +1,79 @@
+<div class="toolchain">
+    <div class="header">
+        <span class="title">🔧 Toolchain</span>
+        @if (tc.hasManifest()) {
+            <span class="count">{{ tc.tools().length }}</span>
+        }
+    </div>
+
+    @if (!tc.online()) {
+        <div class="offline">⚠ No internet — installing tools needs a connection.</div>
+    }
+
+    @if (!tc.hasManifest()) {
+        <div class="body">
+            <p class="hint">No rokit.toml in this project.</p>
+            <button class="action" [disabled]="tc.busy()" (click)="tc.init()">Initialize toolchain</button>
+        </div>
+    } @else {
+        <div class="body">
+            <div class="tools">
+                @if (tc.tools().length === 0) {
+                    <p class="hint">No tools declared.</p>
+                }
+                @for (tool of tc.tools(); track tool.name) {
+                    <div class="tool">
+                        <span class="toolName" [title]="tool.spec">{{ tool.name }}</span>
+                        <app-version-picker
+                            [repo]="repoOf(tool.spec)"
+                            [current]="versionOf(tool.spec)"
+                            [disabled]="tc.busy() || !tc.online()"
+                            (pickVersion)="tc.setVersion(tool.name, $event)"
+                        />
+                        <button class="removeBtn" [disabled]="tc.busy()" [attr.aria-label]="'Remove ' + tool.name" (click)="tc.remove(tool.name)">
+                            🗑
+                        </button>
+                    </div>
+                }
+            </div>
+
+            <div class="actions">
+                <button class="action" [disabled]="tc.busy() || !tc.online()" (click)="tc.install()">⟳ Install</button>
+                <button class="action" [disabled]="tc.busy() || !tc.online()" (click)="tc.update()">↑ Update</button>
+            </div>
+
+            <div class="addField">
+                <div class="addRow">
+                    <input
+                        class="input"
+                        placeholder="search or owner/tool@version"
+                        [disabled]="tc.busy() || !tc.online()"
+                        [value]="newTool()"
+                        (input)="newTool.set($any($event.target).value)"
+                        (keydown.enter)="add(newTool())"
+                    />
+                    <button class="addBtn" [disabled]="tc.busy() || !tc.online() || !newTool().trim()" (click)="add(newTool())">＋</button>
+                </div>
+                @if (suggestions().length > 0) {
+                    <div class="suggestions">
+                        @for (tool of suggestions(); track tool.spec) {
+                            <button class="suggestion" [disabled]="tc.busy() || !tc.online()" [title]="tool.description" (click)="add(tool.spec)">
+                                <span class="suggestionName">{{ tool.name }}</span>
+                                <span class="suggestionSpec">{{ tool.spec }}</span>
+                            </button>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+    <div class="logs">
+        @if (tc.logs().length === 0) {
+            <div class="empty">No output yet.</div>
+        }
+        @for (line of tc.logs(); track $index) {
+            <div class="logLine">{{ line }}</div>
+        }
+    </div>
+</div>

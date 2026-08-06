@@ -1,0 +1,35 @@
+<div class="guide">
+    <p class="lead">
+        Nothing is watched automatically. Tell your game which tables to stream, then
+        run a play-test — snapshots show up here live.
+    </p>
+
+    <ol class="steps">
+        <li>
+            <div class="stepHead">
+                <span>Add the SDK module to your source</span>
+                <button class="copy" (click)="copySdk()">{{ sdkCopied() ? '✓ Copied' : '📋 Copy SDK module' }}</button>
+            </div>
+            Save it in your synced source tree (e.g. <code>src/shared/LunarInspect.lua</code>)
+            so Rojo/Argon keep it on every sync. Only if you're not syncing, paste it into a
+            <code>ModuleScript</code> under <code>ReplicatedStorage</code> — a direct paste
+            gets wiped on the next sync.
+        </li>
+        <li>
+            Enable <code>Game Settings → Security → Allow HTTP Requests</code>.
+        </li>
+        <li>
+            <div class="stepHead">
+                <span>Watch a table from any script</span>
+                <button class="copy" (click)="copySnippet()">{{ snippetCopied() ? '✓ Copied' : '📋 Copy' }}</button>
+            </div>
+            <pre class="code">{{ snippet }}</pre>
+        </li>
+        <li>Run a play-test. Watched tables refresh here every 0.5s.</li>
+    </ol>
+
+    <p class="note">
+        If <code>HttpService</code> blocks <code>127.0.0.1</code>, forward through your
+        plugin instead: <code>LunarInspect.setSink(fn)</code>.
+    </p>
+</div>

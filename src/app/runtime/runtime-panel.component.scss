@@ -1,0 +1,126 @@
+.runtime {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--bg-window);
+    font-size: 12px;
+}
+.header {
+    display: flex;
+    align-items: center;
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--divider);
+    font-weight: 600;
+}
+.statusRow {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.chip {
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: var(--disabled);
+}
+.chip.on {
+    background: var(--success);
+    color: var(--bg-window);
+}
+.chip.off {
+    color: var(--muted);
+}
+.chip.play {
+    background: var(--accent);
+    color: white;
+}
+.clear {
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+}
+.clear:hover {
+    color: var(--text);
+}
+.filterBar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--divider);
+}
+.filterInput {
+    flex: 1;
+    background: var(--bg-chrome);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
+    font-size: 12px;
+    padding: 4px 8px;
+}
+.filterToggle {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: transparent;
+    color: var(--muted);
+    font-size: 11px;
+    padding: 4px 6px;
+    cursor: pointer;
+}
+.filterToggle.active {
+    background: var(--selected);
+    color: var(--text-bright);
+}
+.hiddenCount {
+    font-size: 10px;
+    color: var(--muted);
+}
+.evalBar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-bottom: 1px solid var(--divider);
+    font-family: 'JetBrains Mono', monospace;
+}
+.evalPrompt {
+    color: var(--accent);
+}
+.evalInput {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text);
+    font-size: 12px;
+    font-family: inherit;
+}
+.evalInput:disabled {
+    color: var(--muted);
+}
+.logs {
+    flex: 1;
+    overflow: auto;
+    padding-block: 4px;
+}
+.empty {
+    padding: 12px 10px;
+    color: var(--muted);
+}
+.logLine {
+    padding: 1px 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+.logLine.error {
+    color: var(--danger);
+}
+.logLine.warning {
+    color: var(--warning);
+}
+.logLine.info {
+    color: var(--accent);
+}

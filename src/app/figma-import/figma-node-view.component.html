@@ -1,0 +1,8 @@
+<div class="node" [class]="nodeClass()" [style]="style()" [title]="n().figmaName" (click)="onClick($event)">
+    @if (isText()) {
+        <span class="text" [style]="textStyle()">{{ n().props.text }}</span>
+    }
+    @for (child of n().children; track child.id) {
+        <app-figma-node-view [n]="child" [ctx]="ctx()" />
+    }
+</div>

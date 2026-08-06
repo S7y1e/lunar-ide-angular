@@ -1,0 +1,17 @@
+@if (results().length === 0) {
+    <div class="filterEmpty">No matching files</div>
+} @else {
+    @for (f of results(); track f.path) {
+        <div
+            class="treeRow"
+            [class.selected]="selection.selected() === f.path"
+            [title]="f.relativePath"
+            (click)="open(f)"
+        >
+            <span class="chevronSpacer"></span>
+            <span class="icon">📄</span>
+            <span class="nodeName">{{ f.name }}</span>
+            <span class="filterPath">{{ f.relativePath }}</span>
+        </div>
+    }
+}

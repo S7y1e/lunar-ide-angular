@@ -1,0 +1,69 @@
+.list {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+}
+
+.listRow {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.input {
+    box-sizing: border-box;
+    min-width: 280px;
+    padding: 6px 9px;
+    background: var(--bar);
+    border: 1px solid var(--divider);
+    border-radius: 6px;
+    color: var(--text);
+    font-size: 13px;
+    outline: none;
+}
+
+.input:focus {
+    border-color: var(--focus);
+}
+
+.recordKey {
+    min-width: 160px;
+}
+
+.recordValue {
+    min-width: 200px;
+}
+
+.removeBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    background: transparent;
+    border: 1px solid var(--divider);
+    border-radius: 6px;
+    color: var(--icon);
+    cursor: pointer;
+}
+
+.removeBtn:hover {
+    background: var(--danger-hover);
+    border-color: var(--danger);
+    color: var(--danger);
+}
+
+.addBtn {
+    padding: 5px 10px;
+    background: var(--bar);
+    border: 1px solid var(--divider);
+    border-radius: 6px;
+    color: var(--text);
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.addBtn:hover {
+    background: var(--hover);
+}

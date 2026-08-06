@@ -1,0 +1,10 @@
+<div class="list">
+    @for (row of rows(); track $index) {
+        <div class="listRow">
+            <input class="input recordKey" placeholder="key" [value]="row[0]" (input)="setKey($index, $any($event.target).value)" />
+            <input class="input recordValue" placeholder="value" [value]="row[1]" (input)="setVal($index, $any($event.target).value)" />
+            <button class="removeBtn" (click)="remove($index)" aria-label="Remove">✕</button>
+        </div>
+    }
+    <button class="addBtn" (click)="add()">Add entry</button>
+</div>

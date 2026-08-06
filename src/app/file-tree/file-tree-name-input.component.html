@@ -1,0 +1,9 @@
+<input
+    #input
+    class="nodeInput"
+    [value]="initial()"
+    spellcheck="false"
+    (click)="$event.stopPropagation()"
+    (keydown)="onKeydown($event)"
+    (blur)="cancelled.emit()"
+/>

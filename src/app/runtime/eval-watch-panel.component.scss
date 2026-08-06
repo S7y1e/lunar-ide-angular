@@ -1,0 +1,92 @@
+.panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--bg-chrome);
+    font-size: 12px;
+}
+.header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--divider);
+    font-weight: 600;
+}
+.chip {
+    margin-left: auto;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: var(--disabled);
+}
+.chip.on {
+    background: var(--success);
+    color: var(--bg-window);
+}
+.chip.off {
+    color: var(--muted);
+}
+.addRow {
+    display: flex;
+    gap: 4px;
+    padding: 8px;
+}
+.input {
+    flex: 1;
+    background: var(--bg-window);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
+    font-size: 12px;
+    padding: 5px 8px;
+}
+.addBtn {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    width: 28px;
+}
+.list {
+    flex: 1;
+    overflow: auto;
+}
+.empty {
+    padding: 12px 10px;
+    color: var(--muted);
+}
+.row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+}
+.remove {
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 10px;
+}
+.remove:hover {
+    color: var(--danger);
+}
+.expr {
+    color: var(--text);
+}
+.eq {
+    color: var(--muted);
+}
+.value {
+    color: var(--accent);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.value.error {
+    color: var(--danger);
+}

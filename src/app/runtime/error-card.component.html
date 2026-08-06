@@ -1,0 +1,43 @@
+<div class="errorCard">
+    <button class="errorCardHeader" (click)="expanded.set(!expanded())">
+        <span class="errorIcon">✕</span>
+        <span class="errorMessage">{{ message() }}</span>
+        <span class="chevron">{{ expanded() ? '▾' : '▸' }}</span>
+    </button>
+
+    @if (expanded()) {
+        <div class="errorBody">
+            @if (ctx(); as c) {
+                <div class="sourceCtx">
+                    @for (l of c.lines; track l.n) {
+                        <div class="ctxLine" [class.ctxTarget]="l.n === c.target">
+                            <span class="ctxNum">{{ l.n }}</span>
+                            <span class="ctxText">{{ l.text }}</span>
+                        </div>
+                    }
+                </div>
+            }
+
+            @if (group().frames.length > 0) {
+                <div class="stackFrames">
+                    @for (frame of group().frames; track $index) {
+                        <div
+                            class="frame"
+                            [class.frameLink]="resolvedPath(frame.dotPath)"
+                            [class.frameUnresolved]="!resolvedPath(frame.dotPath)"
+                            [title]="resolvedPath(frame.dotPath) ? (resolvedPath(frame.dotPath) + ':' + frame.line) : (frame.dotPath + ' not in project')"
+                            (click)="openFrame(frame.dotPath)"
+                        >
+                            <span class="frameIndex">{{ $index + 1 }}</span>
+                            <span class="framePath">{{ frame.dotPath }}</span>
+                            <span class="frameLine">:{{ frame.line }}</span>
+                            @if (frame.label) {
+                                <span class="frameLabel"> — {{ frame.label }}</span>
+                            }
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    }
+</div>

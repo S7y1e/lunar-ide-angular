@@ -1,0 +1,42 @@
+.keybind {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.keybindCapture {
+    min-width: 180px;
+    padding: 6px 9px;
+    text-align: left;
+    background: var(--bar);
+    border: 1px solid var(--divider);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    cursor: pointer;
+
+    &:hover {
+        border-color: var(--focus);
+    }
+}
+
+.keybindCapturing {
+    border-color: var(--focus);
+    color: var(--muted);
+}
+
+.keybindClear {
+    display: flex;
+    padding: 4px;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    border-radius: 4px;
+
+    &:hover {
+        background: var(--hover);
+        color: var(--text);
+    }
+}

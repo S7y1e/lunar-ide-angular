@@ -1,0 +1,353 @@
+.overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1500;
+    display: flex;
+    flex-direction: row;
+    background: var(--bg-window);
+}
+
+.main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 44px;
+    padding: 0 12px;
+    border-bottom: 1px solid var(--divider);
+    flex-shrink: 0;
+}
+
+.title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.dims {
+    font-size: 11px;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+}
+
+.spacer {
+    flex: 1;
+}
+
+.seg {
+    display: flex;
+    border: 1px solid var(--divider);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.segOn,
+.segOff {
+    border: none;
+    padding: 5px 12px;
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.segOn {
+    background: var(--accent);
+    color: #fff;
+}
+
+.segOff {
+    background: transparent;
+    color: var(--muted);
+}
+
+.close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: 4px;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+
+    &:hover {
+        background: var(--hover);
+        color: var(--text);
+    }
+}
+
+.viewport {
+    flex: 1;
+    overflow: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-deep);
+    background-image:
+        linear-gradient(45deg, rgba(255, 255, 255, 0.03) 25%, transparent 25%),
+        linear-gradient(-45deg, rgba(255, 255, 255, 0.03) 25%, transparent 25%);
+    background-size: 20px 20px;
+}
+
+.stage {
+    position: relative;
+    flex-shrink: 0;
+    transform-origin: center center;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+}
+
+.elementBar {
+    height: 30px;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    font-size: 11px;
+    color: var(--muted);
+    border-top: 1px solid var(--divider);
+    flex-shrink: 0;
+}
+
+.inspector {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 8px 12px;
+    border-top: 1px solid var(--divider);
+    background: var(--bg-window);
+    flex-shrink: 0;
+}
+
+.inspectorName {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.inspectorRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.inspLabel {
+    font-size: 10px;
+    color: var(--muted);
+}
+
+.inspColor {
+    width: 28px;
+    height: 22px;
+    border: 1px solid var(--divider);
+    border-radius: 3px;
+    padding: 1px;
+    cursor: pointer;
+    background: transparent;
+}
+
+.inspNumber {
+    width: 52px;
+    height: 22px;
+    padding: 0 4px;
+    font-size: 11px;
+    background: var(--bg-chrome);
+    border: 1px solid var(--divider);
+    border-radius: 3px;
+    color: var(--text);
+
+    &:focus {
+        outline: none;
+        border-color: var(--accent);
+    }
+}
+
+.inspBtn {
+    padding: 3px 8px;
+    font-size: 11px;
+    border: 1px solid var(--divider);
+    border-radius: 4px;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    white-space: nowrap;
+
+    &:hover {
+        background: var(--hover);
+        color: var(--text);
+    }
+}
+
+.inspBtnActive {
+    background: rgba(224, 108, 117, 0.12);
+    border-color: rgba(224, 108, 117, 0.5);
+    color: #e06c75;
+
+    &:hover {
+        background: rgba(224, 108, 117, 0.2);
+    }
+}
+
+.classBar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 6px 10px;
+    border-top: 1px solid var(--divider);
+    flex-shrink: 0;
+}
+
+.selectAll {
+    padding: 4px 10px;
+    font-size: 11px;
+    border: 1px solid var(--divider);
+    border-radius: 4px;
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    white-space: nowrap;
+
+    &:hover {
+        background: var(--hover);
+    }
+}
+
+.clsBtn {
+    padding: 4px 8px;
+    font-size: 11px;
+    border: 1px solid var(--divider);
+    border-radius: 4px;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    white-space: nowrap;
+
+    &:not(:disabled):hover {
+        background: var(--hover);
+        color: var(--text);
+        border-color: var(--accent);
+    }
+    &:disabled {
+        opacity: 0.35;
+        cursor: default;
+    }
+}
+
+.clsExclude {
+    color: #e06c75;
+    border-color: rgba(224, 108, 117, 0.4);
+
+    &:not(:disabled):hover {
+        background: rgba(224, 108, 117, 0.1);
+        border-color: #e06c75;
+    }
+}
+
+.imagesPanel {
+    border-top: 1px solid var(--divider);
+    flex-shrink: 0;
+    max-height: 160px;
+    overflow-y: auto;
+}
+
+.imagesPanelHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 12px;
+    position: sticky;
+    top: 0;
+    background: var(--bg-window);
+}
+
+.imagesCount {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+}
+
+.figmaNames {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    color: var(--muted);
+    cursor: pointer;
+
+    input {
+        cursor: pointer;
+    }
+}
+
+.noImages {
+    padding: 8px 12px 10px;
+    font-size: 11px;
+    color: var(--muted);
+    text-align: center;
+}
+
+.imageGrid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 0 10px 8px;
+}
+
+.imageThumb {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    width: 60px;
+
+    img {
+        width: 60px;
+        height: 40px;
+        object-fit: contain;
+        border-radius: 3px;
+        background: var(--bg-deep);
+        border: 1px solid var(--divider);
+    }
+
+    span {
+        font-size: 9px;
+        color: var(--muted);
+        text-overflow: ellipsis;
+        overflow: hidden;
+        width: 100%;
+        text-align: center;
+    }
+}
+
+.sendBar {
+    border-top: 1px solid var(--divider);
+    padding: 10px 12px;
+    flex-shrink: 0;
+}
+
+.send {
+    width: 100%;
+    height: 36px;
+    border: none;
+    border-radius: 6px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+
+    &:hover {
+        filter: brightness(1.1);
+    }
+}

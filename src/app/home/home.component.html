@@ -1,0 +1,37 @@
+<div class="container">
+    <h1 class="title">Welcome to Lunar</h1>
+    <p class="subtitle">Personal Roblox game development IDE</p>
+
+    <div class="cards">
+        <button class="mainCard" title="Create New Game" (click)="showNewProject.set(true)">
+            <span class="cardTitle">New Project</span>
+            <span class="cardDesc">Start a fresh project with a ready-to-use template</span>
+        </button>
+        <button class="mainCard" title="Open Existing Project" (click)="openFolder()">
+            <span class="cardTitle">Open Folder</span>
+            <span class="cardDesc">Open a folder that already has a default.project.json</span>
+        </button>
+    </div>
+
+    <div class="recent">
+        <p class="recentHeading">Recent Projects</p>
+        <div class="recentList">
+            @if (projects().length === 0) {
+                <span class="empty">No recent projects</span>
+            }
+            @for (p of projects(); track p.path) {
+                <button class="recentButton" (click)="openRecent(p.path)">
+                    <span class="recentInfo">
+                        <span class="cardTitle">{{ p.name }}</span>
+                        <span class="cardDesc">{{ p.path }}</span>
+                    </span>
+                    <span class="removeButton" (click)="remove($event, p.path)">×</span>
+                </button>
+            }
+        </div>
+    </div>
+</div>
+
+@if (showNewProject()) {
+    <app-new-project-dialog (create)="newProject($event)" (cancel)="showNewProject.set(false)" />
+}

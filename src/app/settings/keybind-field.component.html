@@ -1,0 +1,15 @@
+<div class="keybind">
+    <button
+        type="button"
+        class="keybindCapture"
+        [class.keybindCapturing]="capturing()"
+        (click)="onClick()"
+        (blur)="onBlur()"
+        (keydown)="onKeyDown($event)"
+    >
+        {{ capturing() ? 'Press keys…' : value() || 'Unbound' }}
+    </button>
+    @if (value() && !capturing()) {
+        <button class="keybindClear" (click)="clear()" title="Unbind">✕</button>
+    }
+</div>

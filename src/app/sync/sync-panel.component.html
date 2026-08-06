@@ -1,0 +1,47 @@
+<div class="sync">
+    <div class="header">
+        <span class="title">🔄 Sync</span>
+        <span class="statusRow">
+            @if (running()) {
+                <span class="chip {{ conn().tone }}">{{ conn().label }}</span>
+            }
+            <span class="dot {{ sync.status() }}"></span>
+            {{ statusLabel[sync.status()] }}
+        </span>
+    </div>
+
+    <div class="body">
+        <label class="field">
+            <span class="fieldLabel">Backend</span>
+            <select class="select" [value]="sync.backend()" [disabled]="running()" (change)="onBackendChange($event)">
+                <option value="rojo">Rojo</option>
+                <option value="argon">Argon (two-way)</option>
+            </select>
+        </label>
+
+        <label class="field">
+            <span class="fieldLabel">Port</span>
+            <input
+                type="number"
+                class="input"
+                [value]="sync.port()"
+                [disabled]="running()"
+                (change)="onPortChange($event)"
+            />
+        </label>
+
+        <button class="action {{ running() ? 'stop' : 'start' }}" (click)="toggle()">
+            {{ running() ? '⏹ Stop sync' : '▶ Start sync' }}
+        </button>
+    </div>
+
+    <div class="logs">
+        @if (sync.logs().length === 0) {
+            <div class="empty">No output yet.</div>
+        } @else {
+            @for (line of sync.logs(); track $index) {
+                <div class="logLine">{{ line }}</div>
+            }
+        }
+    </div>
+</div>

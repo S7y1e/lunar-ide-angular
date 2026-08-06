@@ -1,0 +1,85 @@
+<div class="sidebar">
+    <div class="header">
+        <span class="title">
+            📦 Packages
+            @if (pkgs.list(); as l) {
+                <span class="count">{{ l.packages.length }}</span>
+            }
+        </span>
+        <div class="actions">
+            <button class="headerBtn" title="wally install" [disabled]="pkgs.busy()" (click)="pkgs.install()">⬇</button>
+            <button class="headerBtn" title="wally update" [disabled]="pkgs.busy()" (click)="pkgs.update()">🔄</button>
+            <button class="headerBtn" title="Refresh" (click)="pkgs.refresh()">⟳</button>
+        </div>
+    </div>
+
+    @if (pkgs.list()?.hasWally) {
+        <div class="addRow">
+            <div class="inputWrap">
+                <input
+                    class="input"
+                    placeholder="search or scope/name@version"
+                    [value]="spec()"
+                    (input)="onSpecInput($any($event.target).value)"
+                    (focus)="focused.set(true)"
+                    (blur)="onBlur()"
+                    (keydown.enter)="add()"
+                />
+                @if (showHits()) {
+                    <div class="hits">
+                        @if (hits().length === 0 && searching()) {
+                            <div class="hitEmpty">Searching…</div>
+                        }
+                        @for (h of hits().slice(0, 8); track h.scope + h.name) {
+                            <button class="hit" (mousedown)="$event.preventDefault()" (click)="pick(h)">
+                                <span class="hitName">{{ h.scope }}/{{ h.name }}</span>
+                                <span class="hitVer">{{ h.versions[0] }}</span>
+                                @if (h.description) {
+                                    <span class="hitDesc">{{ h.description }}</span>
+                                }
+                            </button>
+                        }
+                    </div>
+                }
+            </div>
+            <select class="select" [value]="kind()" (change)="kind.set($any($event.target).value)">
+                @for (k of kinds; track k.id) {
+                    <option [value]="k.id">{{ k.label }}</option>
+                }
+            </select>
+            <button class="iconBtn" title="Add" (click)="add()">＋</button>
+        </div>
+    }
+
+    @if (err(); as e) {
+        <div class="err">{{ e }}</div>
+    }
+
+    <div class="body">
+        @if (!pkgs.list()?.hasWally) {
+            <div class="empty">No wally.toml in this project. Run <code>wally init</code> to start managing packages.</div>
+        } @else if (pkgs.list()!.packages.length === 0) {
+            <div class="empty">No dependencies yet.</div>
+        } @else {
+            @for (k of kinds; track k.id) {
+                @if (itemsFor(k.id); as items) {
+                    @if (items.length > 0) {
+                        <div class="section">{{ k.label }} ({{ items.length }})</div>
+                        @for (p of items; track p.kind + p.alias) {
+                            <div class="row">
+                                <span class="alias">{{ p.alias }}</span>
+                                <span class="name">{{ p.name }}</span>
+                                <span class="ver" [title]="'required ' + p.versionReq">{{ p.locked ?? p.versionReq }}</span>
+                                <button class="iconBtn" title="Remove" (click)="remove(p)">🗑</button>
+                            </div>
+                        }
+                    }
+                }
+            }
+        }
+    </div>
+
+    @if (pkgs.log(); as log) {
+        <pre class="log">{{ log }}</pre>
+    }
+</div>

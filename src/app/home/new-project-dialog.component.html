@@ -1,0 +1,45 @@
+<div class="overlay" (click)="cancel.emit()">
+    <div class="dialog" (click)="$event.stopPropagation()">
+        <h2 class="heading">Create New Game</h2>
+
+        <label class="label">Project name</label>
+        <input
+            class="input"
+            [value]="name()"
+            autofocus
+            spellcheck="false"
+            placeholder="my-awesome-game"
+            (input)="name.set($any($event.target).value)"
+            (keydown)="onKeyDown($event)"
+        />
+
+        <label class="label">Folder structure</label>
+        <div class="options">
+            @for (t of templates; track t.id) {
+                <button class="option" [class.optionActive]="template() === t.id" (click)="template.set(t.id)">
+                    <span class="optionTitle">{{ t.label }}</span>
+                    <span class="optionDesc">{{ t.description }}</span>
+                </button>
+            }
+        </div>
+
+        <label class="label">Tooling</label>
+        <div class="tools">
+            @for (tool of tools; track tool.id) {
+                <button class="tool" [class.toolActive]="toolState()[tool.id]" (click)="toggleTool(tool.id)">
+                    <span class="checkbox">{{ toolState()[tool.id] ? '✓' : '' }}</span>
+                    <span class="toolInfo">
+                        <span class="optionTitle">{{ tool.label }}</span>
+                        <span class="optionDesc">{{ tool.description }}</span>
+                    </span>
+                </button>
+            }
+        </div>
+        <p class="hint">Tools are added to a rokit.toml manifest — run <code>rokit install</code> in the project to fetch them.</p>
+
+        <div class="actions">
+            <button class="cancel" (click)="cancel.emit()">Cancel</button>
+            <button class="create" [disabled]="!valid()" (click)="submit()">Create</button>
+        </div>
+    </div>
+</div>

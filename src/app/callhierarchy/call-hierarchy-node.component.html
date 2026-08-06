@@ -1,0 +1,36 @@
+<div class="row" [style.paddingLeft.px]="8 + depth() * 14">
+    @if (!isCycle()) {
+        <button class="chevron" (click)="toggle()">{{ open() ? '▾' : '▸' }}</button>
+    } @else {
+        <span class="chevronSpacer"></span>
+    }
+    <button class="label" [title]="site() ? site()!.file + ':' + site()!.line : name()" (click)="onLabelClick()">
+        <span class="icon">ƒ</span>
+        <span class="name">{{ name() }}</span>
+        @if (site(); as s) {
+            <span class="site">:{{ s.line }}</span>
+        }
+        @if (isCycle()) {
+            <span class="cycle" title="recursive">↻</span>
+        }
+    </button>
+</div>
+
+@if (open() && !isCycle()) {
+    @if (loading()) {
+        <div class="note" [style.paddingLeft.px]="8 + (depth() + 1) * 14">Loading…</div>
+    } @else if (children() && children()!.length === 0) {
+        <div class="note" [style.paddingLeft.px]="8 + (depth() + 1) * 14">{{ emptyLabel() }}</div>
+    } @else {
+        @for (c of children() ?? []; track $index) {
+            <app-call-hierarchy-node
+                [name]="c.name"
+                [direction]="direction()"
+                [site]="childSite(c)"
+                [ancestors]="childAncestors()"
+                [depth]="depth() + 1"
+                (openAt)="openAt.emit($event)"
+            />
+        }
+    }
+}

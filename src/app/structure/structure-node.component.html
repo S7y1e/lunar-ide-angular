@@ -1,0 +1,19 @@
+<div class="row" [style.paddingLeft.px]="8 + depth() * 14">
+    @if (children().length > 0) {
+        <button class="chevron" (click)="open.set(!open())">{{ open() ? '▾' : '▸' }}</button>
+    } @else {
+        <span class="chevronSpacer"></span>
+    }
+    <button class="label" (click)="onLabelClick()" [title]="symbol().name">
+        <span class="icon">{{ icon() }}</span>
+        <span class="name">{{ symbol().name }}</span>
+        @if (symbol().detail) {
+            <span class="detail">{{ symbol().detail }}</span>
+        }
+    </button>
+</div>
+@if (open()) {
+    @for (child of children(); track $index) {
+        <app-structure-node [symbol]="child" [depth]="depth() + 1" (goTo)="onChildGoTo($event)" />
+    }
+}

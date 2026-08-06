@@ -1,0 +1,42 @@
+[package]
+name = "app"
+version = "4.2.0"
+description = "Lunar IDE"
+authors = ["S7y1e"]
+license = "PolyForm-Noncommercial-1.0.0"
+repository = ""
+edition = "2021"
+rust-version = "1.77.2"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+name = "app_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2.6.2", features = [] }
+
+[dependencies]
+serde_json = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+toml = "0.8"
+log = "0.4"
+tauri = { version = "2.11.2", features = [] }
+tauri-plugin-log = "2"
+tauri-plugin-dialog = "2"
+tauri-plugin-fs = { version = "2", features = ["watch"] }
+tauri-plugin-shell = "2"
+tauri-plugin-http = "2"
+portable-pty = "0.8"
+tiny_http = "0.12"
+
+[target.'cfg(windows)'.dependencies]
+windows-sys = { version = "0.59", features = [
+    "Win32_Foundation",
+    "Win32_Security",
+    "Win32_System_JobObjects",
+    "Win32_System_Threading",
+    "Win32_UI_WindowsAndMessaging",
+    "Win32_UI_Input_KeyboardAndMouse",
+] }

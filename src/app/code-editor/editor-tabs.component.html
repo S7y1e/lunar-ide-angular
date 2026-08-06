@@ -1,0 +1,19 @@
+<div class="tabs">
+    @for (path of groups.files(); track path) {
+        <div
+            class="tab"
+            [class.active]="path === groups.activeFile()"
+            (click)="groups.select(path)"
+        >
+            <span class="name">{{ baseName(path) }}</span>
+            <button
+                class="close"
+                [class.dirty]="groups.dirtyFiles().has(path)"
+                [attr.aria-label]="groups.dirtyFiles().has(path) ? 'Unsaved changes — close' : 'Close'"
+                (click)="close($event, path)"
+            >
+                {{ groups.dirtyFiles().has(path) ? '●' : '✕' }}
+            </button>
+        </div>
+    }
+</div>

@@ -1,0 +1,71 @@
+.paletteOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 10vh;
+    z-index: 200;
+}
+.palette {
+    width: 560px;
+    max-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-chrome);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+}
+.paletteInput {
+    margin: 8px 10px;
+    background: var(--bg-window);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-size: 13px;
+    padding: 8px 10px;
+}
+.paletteResults {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 6px;
+}
+.paletteItem {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    padding: 6px 12px;
+    font-size: 12px;
+    cursor: pointer;
+}
+.paletteItem:hover,
+.paletteItem.paletteItemActive {
+    background: var(--hover);
+}
+.icon {
+    font-size: 12px;
+}
+.paletteName {
+    color: var(--text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.paletteName mark {
+    background: color-mix(in srgb, var(--accent) 35%, transparent);
+    color: var(--text-bright);
+    border-radius: 2px;
+}
+.palettePath {
+    margin-left: auto;
+    color: var(--muted);
+    font-size: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: none;
+    max-width: 240px;
+}

@@ -1,0 +1,37 @@
+<div class="panel">
+    <div class="header">
+        <span>👁 Watches</span>
+        <span class="chip" [class.on]="bridge.running()" [class.off]="!bridge.running()">
+            {{ bridge.running() ? 'live' : 'offline' }}
+        </span>
+    </div>
+
+    <div class="addRow">
+        <input
+            class="input"
+            placeholder="Lua expression to watch…"
+            spellcheck="false"
+            [value]="draft()"
+            (input)="draft.set($any($event.target).value)"
+            (keydown.enter)="submit()"
+        />
+        <button class="addBtn" title="Add watch" (click)="submit()">＋</button>
+    </div>
+
+    <div class="list">
+        @if (watcher.watches().length === 0) {
+            <div class="empty">Add an expression to watch it live during a play-test.</div>
+        } @else {
+            @for (w of watcher.watches(); track w.id) {
+                <div class="row">
+                    <button class="remove" title="Remove" (click)="watcher.remove(w.id)">✕</button>
+                    <span class="expr">{{ w.expr }}</span>
+                    <span class="eq">=</span>
+                    <span class="value" [class.error]="watcher.results().get(w.id) && !watcher.results().get(w.id)!.ok">
+                        {{ watcher.results().get(w.id) ? (watcher.results().get(w.id)!.value || 'nil') : '…' }}
+                    </span>
+                </div>
+            }
+        }
+    </div>
+</div>

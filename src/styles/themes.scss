@@ -1,0 +1,350 @@
+/*
+ * Theme palettes.
+ *
+ * Every color used across the UI resolves to one of these tokens, so switching
+ * the `data-theme` attribute on <html> re-skins the whole app at runtime.
+ * Nord is the default; Dracula is available for anyone who prefers it.
+ *
+ * Tokens are also read from JS (Monaco editor + xterm terminal) via
+ * getComputedStyle, so keep the names in sync with src/lib/theme.ts.
+ *
+ * :root carries pre-JS fallback values (same as Studio, the default theme) and
+ * must stay the FIRST rule in this file: every [data-theme="x"] selector below
+ * ties with :root on specificity (0,1,0), so whichever comes LAST in source
+ * order wins the cascade. Keeping :root first means the later, more specific
+ * theme block always wins once ThemeService sets data-theme — combining :root
+ * into the Studio block instead (as this used to do) put Studio's values last
+ * in source order, silently overriding every other theme's colors.
+ */
+:root {
+    --bg-window: #191a1f;
+    --bg-chrome: #1e1f26;
+    --bg-deep: #14151a;
+    --bar: #16171c;
+    --menu: #191a1f;
+
+    --accent: #335fff;
+    --brand: #528bff;
+    --focus: #335fff;
+
+    --text: #d6d6da;
+    --text-bright: #ffffff;
+    --muted: #96969c;
+    --icon: #a8a8bf;
+    --disabled: #3c3c42;
+
+    --hover: #26262c;
+    --selected: #3a3f4b;
+    --selected-hover: #454b5c;
+    --divider: #2d2d32;
+    --border: #26262c;
+
+    --danger: #d97070;
+    --danger-hover: #3a2626;
+    --close-danger: #d97070;
+    --success: #7fada0;
+    --warning: #d9b15c;
+
+    --editor-fg: #d6d6da;
+}
+
+/* ---- Luau (color-theory optimized: warm/cool data-code split) ---- */
+[data-theme="luau"] {
+    --bg-window: #14161d;
+    --bg-chrome: #181b23;
+    --bg-deep: #0f1116;
+    --bar: #0f1218;
+    --menu: #20242e;
+
+    --accent: #57d6c0;
+    --brand: #c79bf2;
+    --focus: #57d6c0;
+
+    --text: #c9d1de;
+    --text-bright: #eef2f8;
+    --muted: #6b7488;
+    --icon: #9aa3b5;
+    --disabled: #3b4150;
+
+    --hover: #1b1f29;
+    --selected: #283450;
+    --selected-hover: #324063;
+    --divider: #1b1f29;
+    --border: #0f1116;
+
+    --danger: #f0857f;
+    --danger-hover: #35262b;
+    --close-danger: #f0857f;
+    --success: #57d6c0;
+    --warning: #e0b884;
+
+    --editor-fg: #c9d1de;
+}
+
+/* ---- Luau Light (warm parchment, eye-comfortable) ---- */
+[data-theme="luau-light"] {
+    --bg-window: #f5edda;
+    --bg-chrome: #ece2c8;
+    --bg-deep: #e4d9bd;
+    --bar: #ece2c8;
+    --menu: #efe6cf;
+
+    --accent: #0c715a;
+    --brand: #7a3fb0;
+    --focus: #0c715a;
+
+    --text: #4b4636;
+    --text-bright: #2e2b22;
+    --muted: #8c836b;
+    --icon: #6f6750;
+    --disabled: #bdb393;
+
+    --hover: #e8dec5;
+    --selected: #e0d4ac;
+    --selected-hover: #d6c89c;
+    --divider: #ddd2b6;
+    --border: #d2c599;
+
+    --danger: #c0392b;
+    --danger-hover: #f1ddd6;
+    --close-danger: #c0392b;
+    --success: #0c715a;
+    --warning: #a84d1a;
+
+    --editor-fg: #4b4636;
+}
+
+/* ---- Nord ---- */
+[data-theme="nord"] {
+    --bg-window: #2e3440;
+    --bg-chrome: #3b4252;
+    --bg-deep: #272c36;
+    --bar: #2b303b;
+    --menu: #434c5e;
+
+    --accent: #5e81ac;
+    --brand: #88c0d0;
+    --focus: #5e81ac;
+
+    --text: #d8dee9;
+    --text-bright: #eceff4;
+    --muted: #7b88a1;
+    --icon: #abb4c4;
+    --disabled: #4c566a;
+
+    --hover: #434c5e;
+    --selected: #3b4a63;
+    --selected-hover: #45587a;
+    --divider: #353b48;
+    --border: #272c36;
+
+    --danger: #bf616a;
+    --danger-hover: #43353a;
+    --close-danger: #bf616a;
+    --success: #a3be8c;
+    --warning: #ebcb8b;
+
+    --editor-fg: #d8dee9;
+}
+
+/* ---- Dracula ---- */
+[data-theme="dracula"] {
+    --bg-window: #282a36;
+    --bg-chrome: #2d2f3d;
+    --bg-deep: #21222c;
+    --bar: #21222c;
+    --menu: #343746;
+
+    --accent: #bd93f9;
+    --brand: #bd93f9;
+    --focus: #bd93f9;
+
+    --text: #f8f8f2;
+    --text-bright: #ffffff;
+    --muted: #6272a4;
+    --icon: #b9bcd0;
+    --disabled: #565872;
+
+    --hover: #44475a;
+    --selected: #44475a;
+    --selected-hover: #565970;
+    --divider: #383a4a;
+    --border: #21222c;
+
+    --danger: #ff5555;
+    --danger-hover: #45313a;
+    --close-danger: #ff5555;
+    --success: #50fa7b;
+    --warning: #ffb86c;
+
+    --editor-fg: #f8f8f2;
+}
+
+/* ---- Tokyo Night ---- */
+[data-theme="tokyo-night"] {
+    --bg-window: #1a1b26;
+    --bg-chrome: #1f2335;
+    --bg-deep: #16161e;
+    --bar: #16161e;
+    --menu: #24283b;
+
+    --accent: #7aa2f7;
+    --brand: #bb9af7;
+    --focus: #7aa2f7;
+
+    --text: #c0caf5;
+    --text-bright: #ffffff;
+    --muted: #565f89;
+    --icon: #a9b1d6;
+    --disabled: #444b6a;
+
+    --hover: #292e42;
+    --selected: #283457;
+    --selected-hover: #34416b;
+    --divider: #1b1e2e;
+    --border: #16161e;
+
+    --danger: #f7768e;
+    --danger-hover: #3b2a33;
+    --close-danger: #f7768e;
+    --success: #9ece6a;
+    --warning: #e0af68;
+
+    --editor-fg: #c0caf5;
+}
+
+/* ---- One Dark ---- */
+[data-theme="one-dark"] {
+    --bg-window: #282c34;
+    --bg-chrome: #21252b;
+    --bg-deep: #1b1f24;
+    --bar: #21252b;
+    --menu: #2c313a;
+
+    --accent: #61afef;
+    --brand: #61afef;
+    --focus: #61afef;
+
+    --text: #abb2bf;
+    --text-bright: #ffffff;
+    --muted: #5c6370;
+    --icon: #abb2bf;
+    --disabled: #4b5263;
+
+    --hover: #2c313a;
+    --selected: #3e4451;
+    --selected-hover: #4b5263;
+    --divider: #21252b;
+    --border: #181a1f;
+
+    --danger: #e06c75;
+    --danger-hover: #3b2e30;
+    --close-danger: #e06c75;
+    --success: #98c379;
+    --warning: #e5c07b;
+
+    --editor-fg: #abb2bf;
+}
+
+/* ---- Catppuccin Mocha ---- */
+[data-theme="catppuccin-mocha"] {
+    --bg-window: #1e1e2e;
+    --bg-chrome: #181825;
+    --bg-deep: #11111b;
+    --bar: #181825;
+    --menu: #313244;
+
+    --accent: #cba6f7;
+    --brand: #cba6f7;
+    --focus: #cba6f7;
+
+    --text: #cdd6f4;
+    --text-bright: #ffffff;
+    --muted: #6c7086;
+    --icon: #bac2de;
+    --disabled: #45475a;
+
+    --hover: #313244;
+    --selected: #414559;
+    --selected-hover: #585b70;
+    --divider: #313244;
+    --border: #11111b;
+
+    --danger: #f38ba8;
+    --danger-hover: #3d2b35;
+    --close-danger: #f38ba8;
+    --success: #a6e3a1;
+    --warning: #f9e2af;
+
+    --editor-fg: #cdd6f4;
+}
+
+/*
+ * ---- Studio ----
+ * Espelha as cores do Script Editor do Roblox Studio (tema padrão), pra quem
+ * já tem o olho acostumado com aquela paleta. Tema padrão do app.
+ */
+[data-theme="studio"] {
+    --bg-window: #191a1f;
+    --bg-chrome: #1e1f26;
+    --bg-deep: #14151a;
+    --bar: #16171c;
+    --menu: #191a1f;
+
+    --accent: #335fff;
+    --brand: #528bff;
+    --focus: #335fff;
+
+    --text: #d6d6da;
+    --text-bright: #ffffff;
+    --muted: #96969c;
+    --icon: #a8a8bf;
+    --disabled: #3c3c42;
+
+    --hover: #26262c;
+    --selected: #3a3f4b;
+    --selected-hover: #454b5c;
+    --divider: #2d2d32;
+    --border: #26262c;
+
+    --danger: #d97070;
+    --danger-hover: #3a2626;
+    --close-danger: #d97070;
+    --success: #7fada0;
+    --warning: #d9b15c;
+
+    --editor-fg: #d6d6da;
+}
+
+/* ---- Gruvbox Dark ---- */
+[data-theme="gruvbox-dark"] {
+    --bg-window: #282828;
+    --bg-chrome: #32302f;
+    --bg-deep: #1d2021;
+    --bar: #1d2021;
+    --menu: #3c3836;
+
+    --accent: #fe8019;
+    --brand: #fabd2f;
+    --focus: #fe8019;
+
+    --text: #ebdbb2;
+    --text-bright: #fbf1c7;
+    --muted: #928374;
+    --icon: #d5c4a1;
+    --disabled: #665c54;
+
+    --hover: #3c3836;
+    --selected: #504945;
+    --selected-hover: #665c54;
+    --divider: #3c3836;
+    --border: #1d2021;
+
+    --danger: #fb4934;
+    --danger-hover: #3f2c28;
+    --close-danger: #fb4934;
+    --success: #b8bb26;
+    --warning: #fabd2f;
+
+    --editor-fg: #ebdbb2;
+}

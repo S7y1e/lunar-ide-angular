@@ -1,0 +1,32 @@
+<div class="panel">
+    <div class="header">
+        <span>🐞 Logpoints</span>
+    </div>
+
+    <div class="list">
+        @if (logpoints.points().length === 0) {
+            <div class="empty">
+                Right-click an expression in the editor → "Add Logpoint". They're injected
+                automatically when you Play and cleaned up on Stop.
+            </div>
+        } @else {
+            @for (p of logpoints.points(); track p.id) {
+                <div class="row">
+                    <button class="remove" title="Remove" (click)="logpoints.remove(p.id)">✕</button>
+                    <button class="loc" [title]="p.file + ':' + p.line" (click)="open(p)">
+                        <span class="expr">{{ p.expr }}</span>
+                        <span class="where">{{ baseName(p.file) }}:{{ p.line }}</span>
+                    </button>
+                    <button
+                        class="stack"
+                        [class.stackOn]="p.includeStack"
+                        title="Include call stack (debug.traceback)"
+                        (click)="logpoints.toggleStack(p.id)"
+                    >
+                        stack
+                    </button>
+                </div>
+            }
+        }
+    </div>
+</div>

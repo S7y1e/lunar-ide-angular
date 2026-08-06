@@ -1,0 +1,31 @@
+<div class="panel">
+    <div class="header">
+        <span>⚠ Problems</span>
+        @if (total() > 0) {
+            <span class="count">{{ total() }}</span>
+        }
+    </div>
+
+    @if (total() === 0) {
+        <div class="empty">No problems detected. luau-lsp diagnostics for open files show up here.</div>
+    } @else {
+        <div class="body">
+            @for (f of files(); track f.rel) {
+                <div class="group">
+                    <div class="fileHead" [title]="f.rel">
+                        <span class="fileName">{{ baseName(f.rel) }}</span>
+                        <span class="filePath">{{ f.rel }}</span>
+                        <span class="fileCount">{{ f.diags.length }}</span>
+                    </div>
+                    @for (d of f.diags; track $index) {
+                        <button class="row" [title]="f.rel + ':' + (d.range.start.line + 1)" (click)="openAt(f.rel, d)">
+                            <span [class]="isError(d) ? 'iconError' : 'iconWarn'">{{ isError(d) ? '⛔' : '⚠' }}</span>
+                            <span class="lineNum">{{ d.range.start.line + 1 }}</span>
+                            <span class="message">{{ d.message }}</span>
+                        </button>
+                    }
+                </div>
+            }
+        </div>
+    }
+</div>

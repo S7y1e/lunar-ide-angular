@@ -1,0 +1,20 @@
+<div class="row" [style.paddingLeft.px]="12 + depth() * 14">
+    <span class="status {{ statusClass(node().status) }}">{{ icon(node().status) }}</span>
+    <span class="phrase">{{ node().phrase }}</span>
+</div>
+
+@for (err of node().errors; track $index) {
+    @let parsed = parseError(err);
+    <div class="errorBlock" [style.paddingLeft.px]="26 + depth() * 14">
+        <div class="errorMsg">{{ parsed.message }}</div>
+        @for (f of parsed.frames; track $index) {
+            <button class="frame" [title]="'Open ' + f.dotPath + ':' + f.line" (click)="openFrame(f.dotPath)">
+                {{ f.raw }}
+            </button>
+        }
+    </div>
+}
+
+@for (child of node().children; track $index) {
+    <app-test-node [node]="child" [depth]="depth() + 1" />
+}

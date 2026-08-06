@@ -1,0 +1,25 @@
+<div class="row" [style.paddingLeft.px]="8 + depth() * 14">
+    @if (children().length > 0) {
+        <button class="chevron" (click)="toggle()">{{ open() ? '▾' : '▸' }}</button>
+    } @else {
+        <span class="chevronSpacer"></span>
+    }
+    <button class="label" (click)="onOpen()" [title]="node()">
+        <span class="icon">ƒ</span>
+        <span class="name">{{ baseName(node()) }}</span>
+        @if (isCycle()) {
+            <span class="cycle" title="cycle">↻</span>
+        }
+    </button>
+</div>
+@if (open()) {
+    @for (child of children(); track child) {
+        <app-hierarchy-node
+            [node]="child"
+            [childrenOf]="childrenOf()"
+            [ancestors]="childAncestors()"
+            [depth]="depth() + 1"
+            (openNode)="openNode.emit($event)"
+        />
+    }
+}

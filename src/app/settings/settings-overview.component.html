@@ -1,0 +1,18 @@
+<div class="overview">
+    <p class="overviewIntro">
+        Pick an area to configure. Settings are grouped by what they affect, most commonly used first.
+    </p>
+    <div class="cards">
+        @for (tool of nav(); track tool.name) {
+            <div class="card">
+                <h3 class="cardTitle">{{ tool.name }}</h3>
+                <p class="cardBlurb">{{ toolMeta[tool.name]?.blurb }}</p>
+                <div class="chips">
+                    @for (category of tool.categories; track category) {
+                        <button class="chip" (click)="pick.emit(tool.name + '::' + category)">{{ category }}</button>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,63 @@
+.overview {
+    max-width: 920px;
+}
+
+.overviewIntro {
+    margin: 8px 4px 20px;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.55;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 14px;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px;
+    background: var(--bar);
+    border: 1px solid var(--divider);
+    border-radius: 10px;
+}
+
+.cardTitle {
+    margin: 0;
+    color: var(--text-bright);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.cardBlurb {
+    margin: 0;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+.chip {
+    padding: 4px 10px;
+    background: var(--hover);
+    border: 1px solid transparent;
+    border-radius: 999px;
+    color: var(--text);
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.chip:hover {
+    background: var(--selected);
+    border-color: var(--focus);
+    color: var(--text-bright);
+}

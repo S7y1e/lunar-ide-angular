@@ -1,0 +1,105 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    background: var(--bg-window);
+    color: var(--text);
+    gap: 6px;
+    padding: 24px;
+}
+.title {
+    font-size: 22px;
+    margin: 0;
+}
+.subtitle {
+    color: var(--muted);
+    margin: 0 0 20px;
+    font-size: 13px;
+}
+.cards {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+.mainCard {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    width: 240px;
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg-chrome);
+    color: var(--text);
+    cursor: pointer;
+}
+.mainCard:hover {
+    background: var(--hover);
+}
+.cardTitle {
+    font-weight: 600;
+    font-size: 13px;
+}
+.cardDesc {
+    color: var(--muted);
+    font-size: 11px;
+}
+.recent {
+    width: 320px;
+}
+.recentHeading {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--muted);
+    margin: 0 0 8px;
+}
+.recentList {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.empty {
+    color: var(--muted);
+    font-size: 12px;
+}
+.recentButton {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    text-align: left;
+}
+.recentButton:hover {
+    background: var(--hover);
+}
+.recentInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+.recentInfo .cardDesc {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.removeButton {
+    color: var(--muted);
+    font-size: 16px;
+    line-height: 1;
+    padding: 2px 4px;
+}
+.removeButton:hover {
+    color: var(--danger);
+}

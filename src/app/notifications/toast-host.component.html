@@ -1,0 +1,20 @@
+@if (toasts.toasts().length > 0) {
+    <div class="toasts">
+        @for (toast of toasts.toasts(); track toast.id) {
+            <div class="toast" [class]="toast.kind">
+                <div class="body">
+                    <div class="message">{{ toast.message }}</div>
+                    @if (toast.detail) {
+                        <div class="detail">{{ toast.detail }}</div>
+                    }
+                    @if (toast.action; as action) {
+                        <button class="action" (click)="runAction(toast.id, action.run)">
+                            {{ action.label }}
+                        </button>
+                    }
+                </div>
+                <button class="close" (click)="toasts.dismiss(toast.id)" title="Dismiss">✕</button>
+            </div>
+        }
+    </div>
+}

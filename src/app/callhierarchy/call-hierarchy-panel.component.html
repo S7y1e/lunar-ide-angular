@@ -1,0 +1,28 @@
+<div class="sidebar">
+    <div class="header">
+        <span class="title">📞 Call Hierarchy</span>
+        @if (navigation.callTarget(); as target) {
+            <span class="toggle">
+                <button class="toggleBtn" [class.toggleBtnActive]="direction() === 'callers'" title="Callers (who calls this)" (click)="direction.set('callers')">
+                    ↙
+                </button>
+                <button class="toggleBtn" [class.toggleBtnActive]="direction() === 'callees'" title="Callees (what this calls)" (click)="direction.set('callees')">
+                    ↗
+                </button>
+            </span>
+        }
+    </div>
+    <div class="body">
+        @if (navigation.callTarget(); as target) {
+            <app-call-hierarchy-node
+                [name]="target.name"
+                [direction]="direction()"
+                [ancestors]="emptyAncestors"
+                [depth]="0"
+                (openAt)="onOpen($event)"
+            />
+        } @else {
+            <div class="empty">Put the cursor on a function and run "Call Hierarchy".</div>
+        }
+    </div>
+</div>

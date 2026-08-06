@@ -1,0 +1,19 @@
+<div class="sidebar">
+    <div class="header">
+        <span class="title">🌳 Hierarchy</span>
+        <button class="headerBtn" (click)="refresh()" title="Refresh">↻</button>
+    </div>
+
+    <div class="tabs">
+        <button class="tab" [class.tabActive]="mode() === 'requires'" (click)="mode.set('requires')">→ Requires</button>
+        <button class="tab" [class.tabActive]="mode() === 'requiredBy'" (click)="mode.set('requiredBy')">← Required by</button>
+    </div>
+
+    <div class="body">
+        @if (rel(); as r) {
+            <app-hierarchy-node [node]="r" [childrenOf]="childrenOf()" [ancestors]="emptyAncestors" [depth]="0" (openNode)="open($event)" />
+        } @else {
+            <div class="empty">{{ loading() ? 'Loading…' : 'Open a module to see its require hierarchy.' }}</div>
+        }
+    </div>
+</div>

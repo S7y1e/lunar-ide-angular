@@ -1,0 +1,74 @@
+:host {
+    display: block;
+}
+.row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    height: 20px;
+    cursor: pointer;
+    position: relative;
+    font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+}
+.row:hover {
+    background: var(--hover);
+}
+.indent {
+    flex: none;
+}
+.chevron {
+    flex: none;
+    width: 10px;
+    font-size: 9px;
+    color: var(--muted);
+    transition: transform 0.1s;
+}
+.chevron.chevronOpen {
+    transform: rotate(90deg);
+}
+.chevronSpacer {
+    width: 10px;
+    flex: none;
+}
+.key {
+    color: var(--muted);
+}
+.value {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.value.num {
+    color: var(--accent);
+}
+.value.str {
+    color: var(--success);
+}
+.value.lit {
+    color: var(--warning);
+}
+.flash {
+    position: absolute;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    animation: flash 0.6s ease-out;
+}
+.flash.added {
+    background: var(--success);
+}
+.flash.removed {
+    background: var(--danger);
+}
+.flash.changed {
+    background: var(--accent);
+}
+@keyframes flash {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}

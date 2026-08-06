@@ -1,0 +1,105 @@
+.sync {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--bg-chrome);
+    font-size: 12px;
+}
+.header {
+    display: flex;
+    align-items: center;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--divider);
+    font-weight: 600;
+}
+.statusRow {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 400;
+    color: var(--muted);
+    font-size: 11px;
+}
+.chip {
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+.chip.running {
+    background: var(--success);
+    color: var(--bg-window);
+}
+.chip.error {
+    background: var(--danger);
+    color: white;
+}
+.chip.warning {
+    background: var(--warning);
+    color: var(--bg-window);
+}
+.dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--disabled);
+}
+.dot.running {
+    background: var(--success);
+}
+.dot.error {
+    background: var(--danger);
+}
+.body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+    border-bottom: 1px solid var(--divider);
+}
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.fieldLabel {
+    font-size: 11px;
+    color: var(--muted);
+}
+.select,
+.input {
+    background: var(--bg-window);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
+    font-size: 12px;
+    padding: 5px 8px;
+}
+.action {
+    border: none;
+    border-radius: 6px;
+    padding: 8px;
+    font-size: 12px;
+    cursor: pointer;
+    color: white;
+}
+.action.start {
+    background: var(--success);
+}
+.action.stop {
+    background: var(--danger);
+}
+.logs {
+    flex: 1;
+    overflow: auto;
+    padding: 6px 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+}
+.empty {
+    color: var(--muted);
+}
+.logLine {
+    white-space: pre-wrap;
+    word-break: break-word;
+}

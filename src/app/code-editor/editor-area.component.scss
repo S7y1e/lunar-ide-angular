@@ -1,0 +1,17 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+.pane {
+    flex: 1;
+    min-height: 0;
+}
+.empty {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    font-size: 13px;
+}

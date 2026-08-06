@@ -1,0 +1,15 @@
+@if (groups.files().length > 0) {
+    <app-editor-tabs />
+}
+@if (groups.activeFile(); as path) {
+    <app-breadcrumbs [path]="path" />
+    <app-monaco-editor
+        class="pane"
+        [path]="path"
+        [value]="groups.content()"
+        (valueChange)="groups.setContent($event)"
+        (save)="groups.save()"
+    />
+} @else {
+    <div class="empty">Open a file to start editing</div>
+}

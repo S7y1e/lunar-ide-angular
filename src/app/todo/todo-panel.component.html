@@ -1,0 +1,38 @@
+<div class="panel">
+    <div class="header">
+        <span>✅ TODO</span>
+        @if (!todo.loading()) {
+            <span class="count">{{ todo.items().length }}</span>
+        }
+        <button class="refresh" title="Refresh" (click)="todo.refresh()">⟳</button>
+    </div>
+
+    @if (todo.loading()) {
+        <div class="empty">Scanning…</div>
+    } @else if (todo.items().length === 0) {
+        <div class="empty">No TODOs found.</div>
+    } @else {
+        <div class="body">
+            @for (group of groups(); track group.file) {
+                <div class="group">
+                    <div class="fileHead" [title]="group.file">
+                        <span class="fileName">{{ baseName(group.file) }}</span>
+                        <span class="filePath">{{ group.file }}</span>
+                        <span class="fileCount">{{ group.items.length }}</span>
+                    </div>
+                    @for (item of group.items; track $index) {
+                        <button
+                            class="row"
+                            [title]="group.file + ':' + item.line"
+                            (click)="open(item)"
+                        >
+                            <span class="tag {{ tagClass(item.tag) }}">{{ item.tag }}</span>
+                            <span class="lineNum">{{ item.line }}</span>
+                            <span class="text">{{ item.text || '…' }}</span>
+                        </button>
+                    }
+                </div>
+            }
+        </div>
+    }
+</div>

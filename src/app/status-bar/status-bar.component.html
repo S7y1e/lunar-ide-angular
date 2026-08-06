@@ -1,0 +1,14 @@
+<footer class="statusBar">
+    @if (project.snapshot(); as snap) {
+        <span class="project" [title]="snap.root">{{ snap.name }}</span>
+    }
+
+    <button class="item {{ info().tone }}" [title]="info().title" (click)="toggleSync()">
+        <span class="icon" [class.spin]="sync.status() === 'running'">🔄</span>
+        <span>{{ info().label }}</span>
+    </button>
+
+    @if (activeEditor.cursor(); as cursor) {
+        <span class="cursor">Ln {{ cursor.line }}, Col {{ cursor.column }}</span>
+    }
+</footer>

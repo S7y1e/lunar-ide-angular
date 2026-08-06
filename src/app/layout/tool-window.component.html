@@ -1,0 +1,85 @@
+@switch (id()) {
+    @case ('project') {
+        <app-file-tree />
+    }
+    @case ('git') {
+        <app-git-panel />
+    }
+    @case ('todo') {
+        <app-todo-panel />
+    }
+    @case ('search') {
+        <app-find-panel />
+    }
+    @case ('deps') {
+        <app-dependencies-panel />
+    }
+    @case ('events') {
+        <app-events-panel />
+    }
+    @case ('toolchain') {
+        <app-toolchain-panel />
+    }
+    @case ('insights') {
+        <app-insights-panel />
+    }
+    @case ('packages') {
+        <app-packages-panel />
+    }
+    @case ('runtime') {
+        <app-runtime-panel />
+    }
+    @case ('watches') {
+        <app-eval-watch-panel />
+    }
+    @case ('logpoints') {
+        <app-logpoint-panel />
+    }
+    @case ('state') {
+        <app-state-panel />
+    }
+    @case ('profiler') {
+        <app-profiler-panel />
+    }
+    @case ('datamodel') {
+        <app-data-model-panel />
+    }
+    @case ('sync') {
+        <app-sync-panel />
+    }
+    @case ('tests') {
+        <app-tests-panel />
+    }
+    @case ('structure') {
+        <app-structure-panel />
+    }
+    @case ('hierarchy') {
+        <app-hierarchy-panel />
+    }
+    @case ('callhierarchy') {
+        <app-call-hierarchy-panel />
+    }
+    @case ('usages') {
+        <app-usages-panel />
+    }
+    @case ('problems') {
+        <app-problems-panel />
+    }
+    @case ('terminal') {
+        @if (project.root(); as root) {
+            <app-terminal [cwd]="root" (close)="layout.toggle('terminal')" />
+        } @else {
+            <div class="placeholder">
+                <span class="glyph">⌨</span>
+                <span>Open a folder first</span>
+            </div>
+        }
+    }
+    @default {
+        <div class="placeholder">
+            <span class="glyph">{{ glyph() }}</span>
+            <span>{{ label() }}</span>
+            <span class="hint">not ported yet</span>
+        </div>
+    }
+}

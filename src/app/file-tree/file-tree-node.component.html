@@ -1,0 +1,44 @@
+<div
+    #row
+    class="treeRow"
+    [class.selected]="selection.selected() === node().path"
+    [style.paddingLeft.px]="depth() * 12 + 8"
+    (click)="onRowClick()"
+    (dblclick)="onRowDblClick()"
+    (contextmenu)="openMenu($event)"
+>
+    @if (node().isDir) {
+        <span class="chevron" [class.chevronOpen]="expanded()">&#9656;</span>
+    } @else {
+        <span class="chevronSpacer"></span>
+    }
+
+    <span class="icon">{{ node().isDir ? '📁' : '📄' }}</span>
+
+    @if (renaming()) {
+        <app-file-tree-name-input [initial]="node().name" (submitted)="submitRename($event)" (cancelled)="renaming.set(false)" />
+    } @else {
+        <span class="nodeName">{{ node().name }}</span>
+        @if (depth() === 0) {
+            <span class="rootPath">{{ node().path }}</span>
+        }
+    }
+</div>
+
+@if (expanded()) {
+    @if (creating(); as kind) {
+        <div class="treeRow" [style.paddingLeft.px]="(depth() + 1) * 12 + 8">
+            <span class="chevronSpacer"></span>
+            <span class="icon">{{ kind === 'folder' ? '📁' : '📄' }}</span>
+            <app-file-tree-name-input initial="" (submitted)="submitCreate($event)" (cancelled)="creating.set(null)" />
+        </div>
+    }
+
+    @for (child of children(); track child.path) {
+        <app-file-tree-node [node]="child" [depth]="depth() + 1" (changed)="reload()" />
+    }
+}
+
+@if (menu(); as m) {
+    <app-file-tree-context-menu [x]="m.x" [y]="m.y" [items]="menuItems()" (closed)="menu.set(null)" />
+}

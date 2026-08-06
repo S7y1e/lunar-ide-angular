@@ -1,0 +1,105 @@
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--bg-chrome);
+    font-size: 12px;
+}
+.header {
+    padding: 8px 10px;
+    font-weight: 600;
+    border-bottom: 1px solid var(--divider);
+}
+.row {
+    display: flex;
+    gap: 4px;
+    padding: 6px 8px 0;
+}
+.input {
+    flex: 1;
+    background: var(--bg-window);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
+    font-size: 12px;
+    padding: 5px 8px;
+}
+.toggle {
+    width: 28px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 12px;
+}
+.toggle:hover {
+    background: var(--hover);
+}
+.toggle.on {
+    background: var(--selected);
+    color: var(--text-bright);
+}
+.toggle:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+.summary {
+    padding: 8px;
+    color: var(--muted);
+    font-size: 11px;
+}
+.body {
+    flex: 1;
+    overflow: auto;
+}
+.group {
+    margin-bottom: 4px;
+}
+.fileHead {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    padding: 4px 10px;
+    font-size: 11px;
+    color: var(--muted);
+}
+.fileName {
+    color: var(--text);
+    font-weight: 600;
+}
+.filePath {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+}
+.match {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    height: 22px;
+    padding: 0 10px;
+    border: none;
+    background: transparent;
+    color: var(--text);
+    text-align: left;
+    cursor: pointer;
+}
+.match:hover {
+    background: var(--hover);
+}
+.line {
+    color: var(--muted);
+    font-size: 10px;
+    flex: none;
+    width: 24px;
+    text-align: right;
+}
+.preview {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-family: 'JetBrains Mono', monospace;
+}

@@ -1,0 +1,65 @@
+<div class="settingsOverlay">
+    <div class="header">
+        <span class="title">Settings</span>
+        <input
+            #searchInput
+            class="search"
+            [value]="query()"
+            spellcheck="false"
+            placeholder="Search settings"
+            (input)="query.set($any($event.target).value)"
+        />
+        <button class="closeBtn" (click)="close.emit()" aria-label="Close settings">✕</button>
+    </div>
+
+    <div class="body">
+        <nav class="nav">
+            <button class="navItem navItemAll" [class.navItemActive]="selected() === null" (click)="selected.set(null)">
+                All settings
+            </button>
+            @for (tool of nav; track tool.name) {
+                <div class="navTool">
+                    <span class="navToolName">{{ tool.name }}</span>
+                    @for (category of tool.categories; track category) {
+                        <button
+                            class="navItem navItemSub"
+                            [class.navItemActive]="selected() === tool.name + '::' + category"
+                            (click)="selected.set(tool.name + '::' + category)"
+                        >
+                            {{ category }}
+                        </button>
+                    }
+                </div>
+            }
+        </nav>
+
+        <div class="fields">
+            @if (showOverview()) {
+                <app-settings-overview [nav]="nav" (pick)="selected.set($event)" />
+            } @else if (sections().length === 0) {
+                <div class="empty">No settings match your search.</div>
+            } @else {
+                @for (section of sections(); track section.id) {
+                    <section class="section">
+                        <h3 class="sectionHead">
+                            <span class="sectionTool">{{ section.tool }}</span>
+                            {{ section.category }}
+                        </h3>
+                        @if (categoryBlurb[section.id]) {
+                            <p class="sectionDesc">{{ categoryBlurb[section.id] }}</p>
+                        }
+                        @for (setting of section.settings; track setting.key) {
+                            <app-settings-field
+                                [setting]="setting"
+                                [value]="valueOf(setting)"
+                                [modified]="isModified(setting)"
+                                (changed)="settings.setValue(setting.key, $event)"
+                                (reset)="settings.resetValue(setting.key)"
+                            />
+                        }
+                    </section>
+                }
+            }
+        </div>
+    </div>
+</div>

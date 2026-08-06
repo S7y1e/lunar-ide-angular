@@ -1,0 +1,9 @@
+<div class="overlay" (click)="closed.emit()" (contextmenu)="$event.preventDefault(); closed.emit()">
+    <div class="menu" [style.top.px]="y()" [style.left.px]="x()" (click)="$event.stopPropagation()">
+        @for (item of items(); track item.label) {
+            <button class="item" [class.danger]="item.danger" (click)="run(item)">
+                {{ item.label }}
+            </button>
+        }
+    </div>
+</div>

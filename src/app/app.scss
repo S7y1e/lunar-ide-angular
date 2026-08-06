@@ -1,0 +1,87 @@
+:host {
+    display: block;
+    height: 100vh;
+    width: 100vw;
+}
+
+.shell {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.shell app-topbar {
+    flex: none;
+}
+
+.shell app-status-bar {
+    flex: none;
+}
+
+.shell app-home {
+    flex: 1;
+    min-height: 0;
+    display: block;
+}
+
+.workbench {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    background: var(--bg-window);
+    color: var(--text);
+    font-size: 13px;
+}
+
+.body {
+    flex: 1;
+    display: flex;
+    min-width: 0;
+}
+
+.side {
+    flex: none;
+    width: 260px;
+}
+
+.main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.editor-area {
+    flex: 1;
+    min-height: 0;
+    background: var(--bg-deep);
+}
+
+.editor-area app-editor-area {
+    display: block;
+    height: 100%;
+}
+
+.bottom {
+    flex: none;
+    height: 30%;
+    min-height: 160px;
+}
+
+.settingsBtn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: transparent;
+    color: var(--icon);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.settingsBtn:hover {
+    background: var(--hover);
+}

@@ -1,0 +1,51 @@
+.versionPicker {
+    position: relative;
+}
+.versionBtn {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: transparent;
+    color: var(--text);
+    font-size: 11px;
+    padding: 2px 6px;
+    cursor: pointer;
+}
+.versionBtn:hover {
+    background: var(--hover);
+}
+.versionMenu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    min-width: 100px;
+    max-height: 200px;
+    overflow: auto;
+    background: var(--menu);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 4px;
+    z-index: 10;
+}
+.item {
+    display: block;
+    width: 100%;
+    text-align: left;
+    border: none;
+    background: transparent;
+    color: var(--text);
+    font-size: 11px;
+    padding: 4px 6px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.item:hover {
+    background: var(--hover);
+}
+.item.current {
+    color: var(--accent);
+}
+.hint {
+    padding: 4px 6px;
+    color: var(--muted);
+    font-size: 11px;
+}

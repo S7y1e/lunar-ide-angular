@@ -1,0 +1,35 @@
+<div class="sidebar">
+    <div class="header">
+        <span class="title">
+            💡 Insights
+            @if (findings().length > 0) {
+                <span class="count">{{ findings().length }}</span>
+            }
+        </span>
+        <button class="headerBtn" title="Refresh" (click)="insights.refresh()">⟳</button>
+    </div>
+
+    <div class="body">
+        @if (findings().length === 0) {
+            <div class="empty">
+                {{ insights.loading() ? 'Analyzing project…' : 'No issues found — orphan modules, require cycles, layer violations and dangling events will show up here.' }}
+            </div>
+        } @else {
+            @for (g of groups(); track g.id) {
+                <div class="section">{{ g.label }} ({{ g.items.length }})</div>
+                @for (f of g.items; track $index) {
+                    <div class="row">
+                        <button class="rowMain" [title]="f.file + ':' + f.line" (click)="open(f)">
+                            <span class="dot {{ f.severity }}"></span>
+                            <span class="message">{{ f.message }}</span>
+                            <span class="path">{{ dirOf(f.file) }}</span>
+                        </button>
+                        @if (fixFor(f.category); as fix) {
+                            <button class="fixBtn" [title]="fix.label" (click)="fixAndRefresh(f)">🪄</button>
+                        }
+                    </div>
+                }
+            }
+        }
+    </div>
+</div>

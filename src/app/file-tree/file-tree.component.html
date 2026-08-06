@@ -1,0 +1,29 @@
+<div class="header">
+    <span class="title">Explorer</span>
+    <span class="actions">
+        <button class="btn" title="Collapse All" aria-label="Collapse All" (click)="collapseAndRefresh()">⊟</button>
+        <button class="btn" title="Refresh" aria-label="Refresh" (click)="collapseAndRefresh()">⟳</button>
+    </span>
+</div>
+
+<div class="filterBar">
+    <span class="filterIcon">🔍</span>
+    <input class="filterInput" placeholder="Filter files" [value]="filter()" (input)="filter.set($any($event.target).value)" />
+    @if (filter()) {
+        <button class="btn" title="Clear filter" aria-label="Clear filter" (click)="filter.set('')">✕</button>
+    }
+</div>
+
+<div class="scroll">
+    @if (query(); as q) {
+        @if (root(); as r) {
+            <app-file-tree-filtered [root]="r.path" [query]="q" />
+        }
+    } @else {
+        @if (root(); as r) {
+            @for (item of [r]; track treeKey()) {
+                <app-file-tree-node [node]="item" [defaultExpanded]="true" [isRoot]="true" />
+            }
+        }
+    }
+</div>

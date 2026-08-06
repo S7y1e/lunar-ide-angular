@@ -1,0 +1,14 @@
+<div class="manager">
+    <div class="managerHeader">
+        <select class="sectionSelect" [value]="selectedIdx()" (change)="onSelectChange($any($event.target).value)">
+            @for (t of trees(); track t.id; let i = $index) {
+                <option [value]="i">{{ t.name }}</option>
+            }
+        </select>
+    </div>
+    <div class="treeScroll">
+        @if (tree(); as t) {
+            <app-figma-tree-row [n]="t" [depth]="0" [ctx]="ctx()" />
+        }
+    </div>
+</div>

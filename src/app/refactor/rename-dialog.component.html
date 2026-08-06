@@ -1,0 +1,50 @@
+<div class="overlay" (click)="close.emit()">
+    <div class="dialog" (click)="$event.stopPropagation()">
+        <div class="title">Rename module</div>
+        <div class="from">{{ baseName() }}</div>
+        <input
+            class="input"
+            [value]="newName()"
+            autofocus
+            spellcheck="false"
+            placeholder="New name (without extension)"
+            (input)="onInput($any($event.target).value)"
+            (keydown)="onKeyDown($event)"
+        />
+
+        @if (!isModule()) {
+            <div class="warn">Open a module file (.luau/.lua) to rename it.</div>
+        }
+
+        @if (plan(); as p) {
+            <div class="summary">
+                @if (p.edits.length === 0) {
+                    No references to update — only the file will be renamed.
+                } @else {
+                    {{ p.edits.length }} reference{{ p.edits.length === 1 ? '' : 's' }} in
+                    {{ groups().length }} file{{ groups().length === 1 ? '' : 's' }} will be updated.
+                }
+            </div>
+            <div class="preview">
+                @for (group of groups(); track group[0]) {
+                    <div class="group">
+                        <div class="file">{{ group[0] }}</div>
+                        @for (edit of group[1]; track $index) {
+                            <div class="edit">
+                                <span class="line">{{ edit.line }}</span>
+                                <code class="after">{{ edit.after.trim() }}</code>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        }
+
+        <div class="actions">
+            <button class="cancel" (click)="close.emit()">Cancel</button>
+            <button class="apply" [disabled]="!plan() || busy()" (click)="confirm()">
+                {{ busy() ? 'Renaming…' : 'Rename' }}
+            </button>
+        </div>
+    </div>
+</div>

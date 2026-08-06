@@ -1,0 +1,60 @@
+.state {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--bg-chrome);
+    font-size: 12px;
+}
+.header {
+    display: flex;
+    align-items: center;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--divider);
+    font-weight: 600;
+}
+.title {
+    margin-right: auto;
+}
+.statusRow {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.chip {
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: var(--disabled);
+}
+.chip.on {
+    background: var(--success);
+    color: var(--bg-window);
+}
+.chip.off {
+    color: var(--muted);
+}
+.chip.play {
+    background: var(--accent);
+    color: white;
+}
+.clear {
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    border-radius: 4px;
+    padding: 2px 4px;
+}
+.clear:hover {
+    color: var(--text);
+    background: var(--hover);
+}
+.clear.active {
+    background: var(--selected);
+    color: var(--text-bright);
+}
+.tree {
+    flex: 1;
+    overflow: auto;
+    padding-block: 4px;
+}

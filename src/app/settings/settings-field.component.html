@@ -1,0 +1,63 @@
+<div class="field" [class.fieldStacked]="stacked">
+    <div class="fieldInfo">
+        <div class="fieldHead">
+            <span class="fieldLabel">{{ setting().label }}</span>
+            @if (modified()) {
+                <span class="fieldBadge" title="Changed from default">Modified</span>
+            }
+        </div>
+        <p class="fieldDesc">{{ setting().description }}</p>
+        <code class="fieldKey">{{ setting().key }}</code>
+    </div>
+    <div class="fieldControl">
+        @switch (setting().type) {
+            @case ('boolean') {
+                <button
+                    type="button"
+                    role="switch"
+                    [attr.aria-checked]="value()"
+                    class="toggle"
+                    [class.toggleOn]="value()"
+                    (click)="changed.emit(!value())"
+                >
+                    <span class="toggleKnob"></span>
+                </button>
+            }
+            @case ('keybind') {
+                <app-keybind-field [value]="$any(value())" (valueChange)="changed.emit($event)" />
+            }
+            @case ('string[]') {
+                <app-string-list-field [values]="$any(value())" (valuesChange)="changed.emit($event)" />
+            }
+            @case ('record') {
+                <app-record-field [entries]="$any(value())" (entriesChange)="changed.emit($event)" />
+            }
+            @case ('number') {
+                <input
+                    type="number"
+                    class="input number"
+                    [value]="$any(value())"
+                    [min]="setting().min ?? null"
+                    [max]="setting().max ?? null"
+                    (change)="changed.emit($any($event.target).valueAsNumber)"
+                />
+            }
+            @default {
+                @if (setting().enum) {
+                    <select class="select" (change)="changed.emit($any($event.target).value)">
+                        @for (option of setting().enum; track option) {
+                            <option [value]="option" [selected]="option === value()">
+                                {{ setting().enumLabels?.[option] ?? option }}
+                            </option>
+                        }
+                    </select>
+                } @else {
+                    <input class="input" [value]="$any(value())" (input)="changed.emit($any($event.target).value)" />
+                }
+            }
+        }
+        @if (modified()) {
+            <button class="fieldReset" (click)="reset.emit()">Reset</button>
+        }
+    </div>
+</div>
