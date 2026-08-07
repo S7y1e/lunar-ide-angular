@@ -167,6 +167,18 @@ export class EditorGroupsService {
         );
     }
 
+    // Forces the debounced session-persist write immediately, so a tab
+    // open/close/reorder made just before the app quits isn't lost with the
+    // timer still pending.
+    async flushSession(): Promise<void> {
+        if (!this.saveTimer) return;
+        clearTimeout(this.saveTimer);
+        this.saveTimer = null;
+        const root = this.project.root();
+        if (!this.restored || !root) return;
+        await writeSession(root, { files: this.files(), active: this.activeFile() });
+    }
+
     // Follow a disk rename/move across the open tab + its buffers, keeping
     // position and active state (also remaps children when a folder moved).
     renameFile(oldPath: string, newPath: string): void {

@@ -1,0 +1,13 @@
+{
+  "name": "Lunar UI Export",
+  "id": "1652482448870852483",
+  "api": "1.0.0",
+  "main": "code.js",
+  "ui": "ui.html",
+  "editorType": ["figma"],
+  "documentAccess": "dynamic-page",
+  "networkAccess": {
+    "allowedDomains": ["http://localhost:34900"],
+    "reasoning": "Sends the selected frame to the local Lunar IDE bridge."
+  }
+}

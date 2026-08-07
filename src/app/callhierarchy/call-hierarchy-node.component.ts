@@ -36,6 +36,19 @@ export class CallHierarchyNodeComponent {
             this.open.set(depth === 0);
         });
 
+        // Reset the cached children whenever direction (Callers/Callees) or
+        // the target name changes, even for an already-expanded node — read
+        // unconditionally so both stay tracked dependencies. Without this,
+        // toggling direction on an expanded node kept showing children
+        // fetched for the previous direction, since the fetch effect below
+        // only reads `direction()`/`name()` on its first (children === null)
+        // run and drops them as dependencies once it starts early-returning.
+        effect(() => {
+            this.direction();
+            this.name();
+            this.children.set(null);
+        });
+
         effect(() => {
             const open = this.open();
             const isCycle = this.isCycle();

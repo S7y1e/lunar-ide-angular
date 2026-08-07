@@ -1,4 +1,4 @@
-import { Injectable, effect, inject, signal } from '@angular/core';
+import { Injectable, effect, inject, signal, untracked } from '@angular/core';
 import { Command, Child } from '@tauri-apps/plugin-shell';
 import { invoke } from '@tauri-apps/api/core';
 import { ProjectService } from '../core/project.service';
@@ -50,11 +50,17 @@ export class SyncService {
     private flushTimer: ReturnType<typeof setTimeout> | null = null;
 
     constructor() {
-        // Follow the project's declared sync backend (from its manifest) once,
-        // as long as nothing is running yet.
+        // Follow the project's declared sync backend (from its manifest) once
+        // per project open, as long as nothing is running yet. Keyed only on
+        // `root()` (read `snapshot()` via untracked so it doesn't retrigger
+        // this) so an unrelated snapshot refresh — any `project://changed`
+        // event, not just a project switch — can't silently revert a backend
+        // the user picked manually via setBackend() while sync was stopped.
         effect(() => {
-            const manifestBackend = this.project.snapshot()?.syncBackend;
-            if ((manifestBackend !== 'rojo' && manifestBackend !== 'argon') || this.child) return;
+            const root = this.project.root();
+            if (!root || this.child) return;
+            const manifestBackend = untracked(() => this.project.snapshot()?.syncBackend);
+            if (manifestBackend !== 'rojo' && manifestBackend !== 'argon') return;
             this.backend.set(manifestBackend);
             this.port.set(DEFAULT_PORT[manifestBackend]);
         });

@@ -1,5 +1,5 @@
 import { Injectable, computed, effect, inject, signal } from '@angular/core';
-import { ALL_TOOLS } from '../activity-bar/activity-views';
+import { ALL_TOOLS } from '../layout/activity-views';
 import { SettingsService } from './settings.service';
 import {
     Dock,
@@ -109,5 +109,14 @@ export class LayoutService {
             active[newR] = tool;
             return { ...s, placement: { ...s.placement, [tool]: { dock, slot } }, active };
         });
+    }
+
+    // Forces the debounced persist write immediately, so a layout change
+    // made just before the app quits isn't lost with the timer still pending.
+    flush(): void {
+        if (!this.saveTimer) return;
+        clearTimeout(this.saveTimer);
+        this.saveTimer = null;
+        if (this.restored) this.settings.setValue(SETTINGS_KEY, this.state());
     }
 }

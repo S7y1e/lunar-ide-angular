@@ -1,25 +1,17 @@
-import { Injectable, effect, inject, signal } from '@angular/core';
-import { ProjectService } from '../core/project.service';
+import { Injectable, signal } from '@angular/core';
+import { createProjectResource } from '../core/project-resource';
 import { PackageList, ShellRun, projectPackages, wallyInstall, wallyUpdate } from '../core/packages';
 
 @Injectable({ providedIn: 'root' })
 export class PackagesService {
-    private readonly project = inject(ProjectService);
+    private readonly resource = createProjectResource<PackageList | null>(projectPackages, null);
 
-    readonly list = signal<PackageList | null>(null);
+    readonly list = this.resource.data;
     readonly busy = signal(false);
     readonly log = signal<string | null>(null);
 
-    constructor() {
-        effect(() => {
-            if (this.project.root()) this.refresh();
-        });
-    }
-
     refresh(): void {
-        projectPackages()
-            .then((l) => this.list.set(l))
-            .catch(() => {});
+        this.resource.refresh();
     }
 
     private async run(fn: () => Promise<ShellRun>): Promise<void> {

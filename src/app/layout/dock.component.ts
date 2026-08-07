@@ -4,7 +4,7 @@ import { Dock, Slot, ToolId, regionId } from '../core/layout.types';
 import { ToolWindowComponent } from './tool-window.component';
 import { DockDragService } from './dock-drag.service';
 import { ResizeHandleComponent } from './resize-handle.component';
-import { ACTIVITY_VIEWS } from '../activity-bar/activity-views';
+import { ACTIVITY_VIEWS } from './activity-views';
 
 const MIN_SPLIT = 15;
 const MAX_SPLIT = 85;

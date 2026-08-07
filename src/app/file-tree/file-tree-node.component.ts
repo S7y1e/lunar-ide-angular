@@ -69,8 +69,9 @@ export class FileTreeNodeComponent implements OnInit {
         // way down (each expansion mounts children, cascading the effect),
         // and the matching leaf scrolls into view and highlights.
         effect(() => {
-            const revealPath = this.selection.revealPath();
-            if (!revealPath) return;
+            const rawRevealPath = this.selection.revealPath();
+            if (!rawRevealPath) return;
+            const revealPath = canonicalPath(rawRevealPath);
             const here = canonicalPath(this.node().path);
             if (this.node().isDir) {
                 if (revealPath.startsWith(here + '\\')) this.expand();

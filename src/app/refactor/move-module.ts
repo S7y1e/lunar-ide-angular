@@ -55,13 +55,14 @@ export async function applyMovePlan(root: string, p: MovePlan): Promise<string> 
     for (const [file, fileEdits] of byFile) {
         const abs = await join(root, ...file.split('/'));
         const text = await readTextFile(abs);
+        const eol = text.includes('\r\n') ? '\r\n' : '\n';
         const lines = text.split(/\r?\n/);
         for (const edit of fileEdits) {
             if (lines[edit.line - 1] === edit.before) {
                 lines[edit.line - 1] = edit.after;
             }
         }
-        await writeTextFile(abs, lines.join('\n'));
+        await writeTextFile(abs, lines.join(eol));
     }
 
     const parent = p.dstRel.split('/').slice(0, -1);

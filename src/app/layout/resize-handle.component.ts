@@ -1,4 +1,5 @@
 import { Component, input, output } from '@angular/core';
+import { startPointerDrag } from './pointer-drag';
 
 // Draggable divider between two panels. Emits the pointer's incremental delta
 // along the resize axis on every move; the consumer decides how to apply it
@@ -23,16 +24,14 @@ export class ResizeHandleComponent {
         const axis = this.orientation() === 'horizontal' ? 'clientX' : 'clientY';
         let last = e[axis];
 
-        const move = (ev: PointerEvent) => {
-            const cur = ev[axis];
-            this.drag.emit(cur - last);
-            last = cur;
-        };
-        const up = () => {
-            window.removeEventListener('pointermove', move);
-            window.removeEventListener('pointerup', up);
-        };
-        window.addEventListener('pointermove', move);
-        window.addEventListener('pointerup', up);
+        startPointerDrag(e, {
+            onMove: (ev) => {
+                const cur = ev[axis];
+                this.drag.emit(cur - last);
+                last = cur;
+            },
+            onEnd: () => {},
+            onCancel: () => {},
+        });
     }
 }

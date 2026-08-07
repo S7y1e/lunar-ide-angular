@@ -74,6 +74,11 @@ export class ToolchainService {
     readonly logs = signal<string[]>([]);
     readonly online = signal(navigator.onLine);
 
+    // Bumped on every refresh() call so a slower, stale response (e.g. from
+    // a project switched away from) can't overwrite the newer project's data
+    // if it resolves after a later refresh() already completed.
+    private refreshGeneration = 0;
+
     constructor() {
         effect(() => {
             if (this.project.root()) this.refresh();
@@ -89,11 +94,15 @@ export class ToolchainService {
     async refresh(): Promise<void> {
         const root = this.project.root();
         if (!root) return;
+        const generation = ++this.refreshGeneration;
         try {
             const manifest = await join(root, 'rokit.toml');
-            this.tools.set(parseTools(await readTextFile(manifest)));
+            const tools = parseTools(await readTextFile(manifest));
+            if (generation !== this.refreshGeneration) return;
+            this.tools.set(tools);
             this.hasManifest.set(true);
         } catch {
+            if (generation !== this.refreshGeneration) return;
             this.tools.set([]);
             this.hasManifest.set(false);
         }

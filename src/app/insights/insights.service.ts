@@ -1,25 +1,15 @@
-import { Injectable, effect, inject, signal } from '@angular/core';
-import { ProjectService } from '../core/project.service';
+import { Injectable } from '@angular/core';
+import { createProjectResource } from '../core/project-resource';
 import { Insights, getProjectInsights } from '../core/project-queries';
 
 @Injectable({ providedIn: 'root' })
 export class InsightsService {
-    private readonly project = inject(ProjectService);
+    private readonly resource = createProjectResource<Insights | null>(getProjectInsights, null);
 
-    readonly insights = signal<Insights | null>(null);
-    readonly loading = signal(false);
-
-    constructor() {
-        effect(() => {
-            if (this.project.root()) this.refresh();
-        });
-    }
+    readonly insights = this.resource.data;
+    readonly loading = this.resource.loading;
 
     refresh(): void {
-        this.loading.set(true);
-        getProjectInsights()
-            .then((i) => this.insights.set(i))
-            .catch(() => this.insights.set(null))
-            .finally(() => this.loading.set(false));
+        this.resource.refresh();
     }
 }

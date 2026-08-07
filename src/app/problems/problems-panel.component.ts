@@ -1,7 +1,7 @@
 import { Component, computed, inject } from '@angular/core';
 import { ProblemsService } from './problems.service';
 import { getDiagnostics } from '../code-editor/luau-lsp/diagnostics-store';
-import { uriToPath } from '../core/monaco-uri';
+import { canonicalPath, uriToPath } from '../core/monaco-uri';
 import { toRelative } from '../core/path';
 import { baseName } from '../core/path';
 import { ProjectService } from '../core/project.service';
@@ -26,8 +26,9 @@ export class ProblemsPanelComponent {
         this.problems.version(); // reactive dependency on the diagnostics store
         const root = this.project.root();
         if (!root) return [];
+        const canonicalRoot = canonicalPath(root);
         return [...getDiagnostics().entries()]
-            .map(([uri, diags]) => ({ rel: toRelative(root, uriToPath(uri)), diags }))
+            .map(([uri, diags]) => ({ rel: toRelative(canonicalRoot, canonicalPath(uriToPath(uri))), diags }))
             .filter((f) => f.diags.length > 0)
             .sort((a, b) => a.rel.localeCompare(b.rel));
     });

@@ -3,7 +3,7 @@ import { Command } from './commands';
 import { LayoutService } from '../core/layout.service';
 import { SettingsUiService } from '../settings/settings-ui.service';
 import { ToolId } from '../core/layout.types';
-import { ACTIVITY_VIEWS } from '../activity-bar/activity-views';
+import { ACTIVITY_VIEWS } from '../layout/activity-views';
 import { SyncService } from '../sync/sync.service';
 import { BuildService } from '../build/build.service';
 import { TestResultsService } from '../tests/test-results.service';

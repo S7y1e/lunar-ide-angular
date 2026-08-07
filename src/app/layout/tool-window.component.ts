@@ -26,7 +26,7 @@ import { HierarchyPanelComponent } from '../hierarchy/hierarchy-panel.component'
 import { CallHierarchyPanelComponent } from '../callhierarchy/call-hierarchy-panel.component';
 import { UsagesPanelComponent } from '../usages/usages-panel.component';
 import { ProblemsPanelComponent } from '../problems/problems-panel.component';
-import { ACTIVITY_VIEWS } from '../activity-bar/activity-views';
+import { ACTIVITY_VIEWS } from './activity-views';
 
 // Render a tool window's content by id — keyed by tool so any tool can dock
 // anywhere. Everything not listed here is a placeholder until it's ported.

@@ -44,6 +44,10 @@ export class LspConnection {
     async stop(): Promise<void> {
         await this.child?.kill();
         this.child = null;
+        for (const pending of this.pending.values()) {
+            pending.reject(new Error("[luau-lsp] connection stopped"));
+        }
+        this.pending.clear();
     }
 
     onNotification(method: string, handler: NotificationHandler): void {

@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, ElementRef, HostListener, inject, signal } from '@angular/core';
 import { getCurrentWindow } from '@tauri-apps/api/window';
 import { ProjectService } from '../core/project.service';
 import {
@@ -16,9 +16,18 @@ import {
     styleUrl: './topbar.component.scss',
 })
 export class TopBarComponent {
+    private readonly elementRef = inject(ElementRef<HTMLElement>);
     protected readonly project = inject(ProjectService);
     protected readonly fileOpen = signal(false);
     protected readonly recent = signal<RecentProject[]>([]);
+
+    @HostListener('document:click', ['$event'])
+    protected onDocumentClick(event: MouseEvent): void {
+        if (!this.fileOpen()) return;
+        if (!this.elementRef.nativeElement.contains(event.target as Node)) {
+            this.fileOpen.set(false);
+        }
+    }
 
     protected loadRecent(): void {
         getRecentProjectsFile().then((p) => this.recent.set(p));

@@ -3,7 +3,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { LayoutService } from '../core/layout.service';
 import { DockDragService } from './dock-drag.service';
 import { Dock, ToolId } from '../core/layout.types';
-import { ACTIVITY_VIEWS } from '../activity-bar/activity-views';
+import { ACTIVITY_VIEWS } from './activity-views';
 
 // Angular port of dock-stripe.tsx: the icon rail for one dock. Only the
 // tools currently placed in that dock show here — moving a tool to a

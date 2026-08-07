@@ -1,5 +1,5 @@
-import { Injectable, computed, effect, inject, signal } from '@angular/core';
-import { ProjectService } from '../core/project.service';
+import { Injectable, computed } from '@angular/core';
+import { createProjectResource } from '../core/project-resource';
 import { DataModelNode, getProjectDataModel } from '../core/project-queries';
 import { makeResolver } from '../core/resolve-instance';
 
@@ -8,24 +8,14 @@ import { makeResolver } from '../core/resolve-instance';
 // source file for the Runtime panel's clickable stack traces.
 @Injectable({ providedIn: 'root' })
 export class DataModelService {
-    private readonly project = inject(ProjectService);
+    private readonly resource = createProjectResource<DataModelNode | null>(getProjectDataModel, null);
 
-    readonly tree = signal<DataModelNode | null>(null);
-    readonly loading = signal(false);
+    readonly tree = this.resource.data;
+    readonly loading = this.resource.loading;
 
     readonly resolve = computed(() => makeResolver(this.tree()));
 
-    constructor() {
-        effect(() => {
-            if (this.project.root()) this.refresh();
-        });
-    }
-
     refresh(): void {
-        this.loading.set(true);
-        getProjectDataModel()
-            .then((t) => this.tree.set(t))
-            .catch(() => this.tree.set(null))
-            .finally(() => this.loading.set(false));
+        this.resource.refresh();
     }
 }

@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { getCurrentWindow } from '@tauri-apps/api/window';
 import { EditorGroupsService } from './editor-groups.service';
+import { LayoutService } from './layout.service';
 import { SyncService } from '../sync/sync.service';
 
 // Save dirty files and stop the sync server before the window closes, so the
@@ -9,6 +10,7 @@ import { SyncService } from '../sync/sync.service';
 @Injectable({ providedIn: 'root' })
 export class WindowCloseService {
     private readonly editorGroups = inject(EditorGroupsService);
+    private readonly layout = inject(LayoutService);
     private readonly sync = inject(SyncService);
 
     constructor() {
@@ -21,6 +23,16 @@ export class WindowCloseService {
         }
         win.onCloseRequested(async (event) => {
             event.preventDefault();
+            try {
+                this.layout.flush();
+            } catch (e) {
+                console.error('layout flush on close failed', e);
+            }
+            try {
+                await this.editorGroups.flushSession();
+            } catch (e) {
+                console.error('session flush on close failed', e);
+            }
             try {
                 await this.editorGroups.saveAll();
             } catch (e) {
