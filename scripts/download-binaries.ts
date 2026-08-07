@@ -37,6 +37,12 @@ interface Tool {
   ) => string | null;
   // The binary filename inside the zip (without .exe — we add that for Windows).
   binaryName: string;
+  // Pin to a specific tag instead of floating on "latest". Set this when a
+  // newer release is confirmed to regress something we depend on — e.g.
+  // luau-lsp 1.69.0 fails to parse resources/globalTypes.PluginSecurity.d.luau
+  // ("Failed to read definitions file"), while 1.68.1 reads it cleanly.
+  // Bump only after manually verifying the new version against that file.
+  pinnedVersion?: string;
 }
 
 const TOOLS: Tool[] = [
@@ -44,6 +50,7 @@ const TOOLS: Tool[] = [
     name: "luau-lsp",
     repo: "JohnnyMorganz/luau-lsp",
     binaryName: "luau-lsp",
+    pinnedVersion: "1.68.1",
     assetName: (_version, platform, arch) => {
       if (platform === "windows") return "luau-lsp-win64.zip";
       if (platform === "linux") return `luau-lsp-linux-${arch}.zip`;
@@ -77,10 +84,15 @@ const TOOLS: Tool[] = [
   },
 ];
 
-async function getLatestRelease(
-  repo: string
+async function getRelease(
+  repo: string,
+  pinnedVersion?: string
 ): Promise<{ version: string; assets: Record<string, string> }> {
-  const url = `https://api.github.com/repos/${repo}/releases/latest`;
+  // Tag format isn't consistent across repos (luau-lsp tags "1.68.1", rojo/argon/rokit
+  // tag "v1.2.3"), so pinnedVersion must be given as the exact tag string.
+  const url = pinnedVersion
+    ? `https://api.github.com/repos/${repo}/releases/tags/${pinnedVersion}`
+    : `https://api.github.com/repos/${repo}/releases/latest`;
   const headers: Record<string, string> = { Accept: "application/vnd.github+json" };
   const token = process.env.GITHUB_TOKEN ?? process.env.GH_TOKEN;
   if (token) headers.Authorization = `Bearer ${token}`;
@@ -130,8 +142,8 @@ async function main() {
 
   for (const tool of TOOLS) {
     console.log(`\n=== ${tool.name} (${tool.repo}) ===`);
-    const { version, assets } = await getLatestRelease(tool.repo);
-    console.log(`  Latest version: ${version}`);
+    const { version, assets } = await getRelease(tool.repo, tool.pinnedVersion);
+    console.log(`  ${tool.pinnedVersion ? "Pinned" : "Latest"} version: ${version}`);
 
     // For luau-lsp macOS: download the universal zip once and use for both triples
     const macosCachedZip: Record<string, Uint8Array> = {};
