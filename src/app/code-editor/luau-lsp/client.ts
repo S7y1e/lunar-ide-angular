@@ -42,6 +42,11 @@ export class LuauLspClient {
         (resolve) => (this.resolveReady = resolve),
     );
     private semanticLegend: SemanticTokensLegend | null = null;
+    // What the server advertised at initialize. Requests for methods it
+    // didn't announce must be skipped rather than sent — the server answers
+    // -32601 ("method not found"), which surfaces as an unhandled rejection
+    // in Monaco's provider chain rather than degrading quietly.
+    private serverCapabilities: Record<string, unknown> = {};
     private fileWatch: UnwatchFn | null = null;
     private fileWatchStarting = false;
     private stopped = false;
@@ -112,13 +117,16 @@ export class LuauLspClient {
         });
         console.log("[luau-lsp] initialized", result);
 
-        const provider = (
-            result as {
-                capabilities?: {
-                    semanticTokensProvider?: { legend?: SemanticTokensLegend };
-                };
-            }
-        )?.capabilities?.semanticTokensProvider;
+        const capabilities =
+            (
+                result as {
+                    capabilities?: Record<string, unknown>;
+                }
+            )?.capabilities ?? {};
+        this.serverCapabilities = capabilities;
+        const provider = capabilities['semanticTokensProvider'] as
+            | { legend?: SemanticTokensLegend }
+            | undefined;
         this.semanticLegend = provider?.legend ?? null;
 
         this.conn.sendNotification("initialized", {});
@@ -335,6 +343,9 @@ export class LuauLspClient {
         position: LspPosition
     ): Promise<LspDocumentHighlight[] | null> {
         await this.ready;
+        // luau-lsp doesn't implement this one, and Monaco asks for it on
+        // every cursor move — without the guard each click logs an error.
+        if (!this.serverCapabilities["documentHighlightProvider"]) return null;
         return this.conn.sendRequest("textDocument/documentHighlight", {
             textDocument: { uri },
             position,

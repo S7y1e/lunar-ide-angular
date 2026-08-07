@@ -31,6 +31,7 @@
               }
             ],
             "styles": [
+              "node_modules/monaco-editor/min/vs/editor/editor.main.css",
               "src/styles.scss"
             ],
             "loader": {
@@ -42,8 +43,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "5MB",
-                  "maximumError": "6MB"
+                  "maximumWarning": "6MB",
+                  "maximumError": "7MB"
                 },
                 {
                   "type": "anyComponentStyle",
