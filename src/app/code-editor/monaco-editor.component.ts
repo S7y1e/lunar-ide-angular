@@ -51,6 +51,7 @@ export class MonacoEditorComponent implements AfterViewInit, OnChanges, OnDestro
     private autoSaveTimer: ReturnType<typeof setTimeout> | null = null;
     private currentModel: monaco.editor.ITextModel | null = null;
     private contentSub?: monaco.IDisposable;
+    private resizeObserver?: ResizeObserver;
 
     ngAfterViewInit(): void {
         this.editor = monaco.editor.create(this.host.nativeElement, {
@@ -60,6 +61,15 @@ export class MonacoEditorComponent implements AfterViewInit, OnChanges, OnDestro
         });
         this.activeEditor.editor.set(this.editor);
         this.setModelForPath(this.path(), this.value());
+
+        // `automaticLayout` in EDITOR_OPTIONS covers most resizes via
+        // Monaco's own ResizeObserver, but that hasn't proven reliable
+        // enough on its own (seen stuck at the size measured on creation
+        // even after the host container genuinely resized) — likely a
+        // webview-specific quirk. This explicit observer is the fallback
+        // that's actually needed for the packaged app.
+        this.resizeObserver = new ResizeObserver(() => this.editor?.layout());
+        this.resizeObserver.observe(this.host.nativeElement);
 
         this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
             this.save.emit();
@@ -137,6 +147,7 @@ export class MonacoEditorComponent implements AfterViewInit, OnChanges, OnDestro
 
     ngOnDestroy(): void {
         if (this.autoSaveTimer) clearTimeout(this.autoSaveTimer);
+        this.resizeObserver?.disconnect();
         this.contentSub?.dispose();
         this.editor?.dispose();
         if (this.activeEditor.editor() === this.editor) {
