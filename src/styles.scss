@@ -1,18 +1,41 @@
-@use "@fontsource/inter/400.css" as *;
-@use "@fontsource/inter/500.css" as *;
-@use "@fontsource/inter/600.css" as *;
-@use "@fontsource/jetbrains-mono/400.css" as *;
-@use "@fontsource/jetbrains-mono/500.css" as *;
-@use "./styles/themes.scss" as *;
+// mat-icon is used app-wide for iconography (see activity-views.ts etc.); it
+// only needs the icon font below, not Angular Material's full component
+// theming (mat.theme()) — this app has its own hand-rolled 9-theme CSS custom
+// property system (styles/themes.scss) that mat.theme()'s Material 3 color
+// tokens would otherwise sit awkwardly alongside.
+@use '@fontsource/material-symbols-outlined/400.css' as *;
+@use '@fontsource/inter/400.css' as *;
+@use '@fontsource/inter/500.css' as *;
+@use '@fontsource/inter/600.css' as *;
+@use '@fontsource/jetbrains-mono/400.css' as *;
+@use '@fontsource/jetbrains-mono/500.css' as *;
+@use './styles/themes.scss' as *;
+
+// Standard Material Symbols font setup (mat-icon applies the fontSet name —
+// see MAT_ICON_DEFAULT_OPTIONS in app.config.ts — as this class).
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  line-height: 1;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: 'liga';
+}
 
 html,
 body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background: var(--bg-window);
-    font-family: "Inter", system-ui, sans-serif;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: var(--bg-window);
+  font-family: 'Inter', system-ui, sans-serif;
 }
 
 /*
@@ -23,55 +46,55 @@ body {
  * from core/ui-scale.ts (lunar.ui.scale setting).
  */
 app-root {
-    display: block;
-    height: calc(100% / var(--ui-scale, 1));
-    width: calc(100% / var(--ui-scale, 1));
-    transform: scale(var(--ui-scale, 1));
-    transform-origin: top left;
-    overflow: hidden;
-    background: var(--bg-window);
+  display: block;
+  height: calc(100% / var(--ui-scale, 1));
+  width: calc(100% / var(--ui-scale, 1));
+  transform: scale(var(--ui-scale, 1));
+  transform-origin: top left;
+  overflow: hidden;
+  background: var(--bg-window);
 }
 
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 :focus-visible {
-    outline: 2px solid var(--focus);
-    outline-offset: 2px;
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
 }
 
 ::selection {
-    background: color-mix(in srgb, var(--accent) 35%, transparent);
-    color: var(--text-bright);
+  background: color-mix(in srgb, var(--accent) 35%, transparent);
+  color: var(--text-bright);
 }
 
 button:not(:disabled):active {
-    filter: brightness(0.85);
+  filter: brightness(0.85);
 }
 
 ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
+  width: 10px;
+  height: 10px;
 }
 
 ::-webkit-scrollbar-track {
-    background: transparent;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: color-mix(in srgb, var(--icon) 35%, transparent);
-    border: 2px solid transparent;
-    border-radius: 6px;
-    background-clip: padding-box;
+  background-color: color-mix(in srgb, var(--icon) 35%, transparent);
+  border: 2px solid transparent;
+  border-radius: 6px;
+  background-clip: padding-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background-color: color-mix(in srgb, var(--icon) 55%, transparent);
-    border: 2px solid transparent;
-    background-clip: padding-box;
+  background-color: color-mix(in srgb, var(--icon) 55%, transparent);
+  border: 2px solid transparent;
+  background-clip: padding-box;
 }
 
 ::-webkit-scrollbar-corner {
-    background: transparent;
+  background: transparent;
 }

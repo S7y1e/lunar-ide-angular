@@ -25,6 +25,9 @@
     color: var(--text-bright);
     background: var(--bg-deep);
 }
+.tab.dragging {
+    opacity: 0.6;
+}
 .name {
     overflow: hidden;
     text-overflow: ellipsis;

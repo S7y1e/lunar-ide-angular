@@ -1,11 +1,19 @@
-@if (tool(); as t) {
-    <div class="dock">
-        <div class="header">
-            <span class="title">{{ label(t) }}</span>
-            <button class="close" (click)="layout.collapse(region())" title="Close">✕</button>
-        </div>
-        <div class="content">
-            <app-tool-window [id]="t" />
-        </div>
-    </div>
-}
+<div #container class="dock" [class.horizontal]="horizontal()">
+    @for (slot of slots(); track slot; let first = $first; let last = $last) {
+        @if (toolIn(slot); as t) {
+            <div class="region" [style.flex]="!last ? '0 0 ' + splitRatio() + '%' : '1 1 0%'">
+                <div class="header" (pointerdown)="onHeaderPointerDown($event, t)">
+                    <span class="title">{{ label(t) }}</span>
+                    <button class="close" (click)="close(slot)" title="Close">✕</button>
+                </div>
+                <div class="content">
+                    <app-tool-window [id]="t" />
+                </div>
+            </div>
+
+            @if (!last) {
+                <app-resize-handle [orientation]="horizontal() ? 'horizontal' : 'vertical'" (drag)="onSplitDrag($event)" />
+            }
+        }
+    }
+</div>

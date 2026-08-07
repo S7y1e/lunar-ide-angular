@@ -1,23 +1,51 @@
-import { Injectable, computed, signal } from '@angular/core';
+import { Injectable, computed, effect, inject, signal } from '@angular/core';
 import { ALL_TOOLS } from '../activity-bar/activity-views';
+import { SettingsService } from './settings.service';
 import {
     Dock,
+    LayoutState,
     RegionId,
     Slot,
     ToolId,
     defaultLayout,
     regionId,
+    withDefaults,
 } from './layout.types';
 
-// Signal-based port of use-layout.ts. Settings persistence (readSettings/
-// writeSettings in the original) isn't wired up yet — this only holds layout
-// in memory for now.
+const SETTINGS_KEY = 'lunar.layout';
+const SAVE_DELAY_MS = 300;
+
+// Signal-based port of use-layout.ts, including settings persistence
+// (readSettings/writeSettings there — SettingsService's shared settings.json
+// blob here, under the same "lunar.layout" key).
 @Injectable({ providedIn: 'root' })
 export class LayoutService {
+    private readonly settings = inject(SettingsService);
     private readonly state = signal(defaultLayout(ALL_TOOLS));
 
     readonly placement = computed(() => this.state().placement);
     readonly active = computed(() => this.state().active);
+
+    private restored = false;
+    private saveTimer: ReturnType<typeof setTimeout> | null = null;
+
+    constructor() {
+        // Apply the saved layout once, the first time settings finish loading.
+        effect(() => {
+            if (!this.settings.loaded() || this.restored) return;
+            const saved = this.settings.values()[SETTINGS_KEY] as Partial<LayoutState> | undefined;
+            if (saved?.placement) this.state.set(withDefaults(ALL_TOOLS, saved));
+            this.restored = true;
+        });
+
+        // Persist after the initial load, debounced so a burst of moves writes once.
+        effect(() => {
+            const s = this.state();
+            if (!this.restored) return;
+            if (this.saveTimer) clearTimeout(this.saveTimer);
+            this.saveTimer = setTimeout(() => this.settings.setValue(SETTINGS_KEY, s), SAVE_DELAY_MS);
+        });
+    }
 
     region(tool: ToolId): RegionId {
         const p = this.state().placement[tool];

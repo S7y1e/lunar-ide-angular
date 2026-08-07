@@ -1,0 +1,51 @@
+.overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1500;
+    pointer-events: none;
+}
+
+.band {
+    position: absolute;
+    display: flex;
+    pointer-events: none;
+}
+
+.bandLeft {
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 28%;
+    flex-direction: column;
+}
+
+.bandRight {
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: 28%;
+    flex-direction: column;
+}
+
+.bandBottom {
+    left: 28%;
+    right: 28%;
+    bottom: 0;
+    height: 34%;
+    flex-direction: row;
+}
+
+.zone {
+    flex: 1;
+    margin: 6px;
+    border: 2px dashed rgba(255, 255, 255, 0.18);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.04);
+    pointer-events: auto;
+    transition: background 0.08s, border-color 0.08s;
+}
+
+.zoneHot {
+    background: color-mix(in srgb, var(--accent) 22%, transparent);
+    border-color: var(--accent);
+}

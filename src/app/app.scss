@@ -34,6 +34,7 @@
 }
 
 .body {
+    position: relative;
     flex: 1;
     display: flex;
     min-width: 0;
@@ -41,7 +42,7 @@
 
 .side {
     flex: none;
-    width: 260px;
+    min-width: 0;
 }
 
 .main {
@@ -64,8 +65,7 @@
 
 .bottom {
     flex: none;
-    height: 30%;
-    min-height: 160px;
+    min-height: 0;
 }
 
 .settingsBtn {

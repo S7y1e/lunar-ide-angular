@@ -1,0 +1,14 @@
+<div class="overlay">
+    <div class="band bandLeft">
+        <div [attr.data-zone]="zoneId('left', 'a')" class="zone" [class.zoneHot]="hot() === zoneId('left', 'a')"></div>
+        <div [attr.data-zone]="zoneId('left', 'b')" class="zone" [class.zoneHot]="hot() === zoneId('left', 'b')"></div>
+    </div>
+    <div class="band bandRight">
+        <div [attr.data-zone]="zoneId('right', 'a')" class="zone" [class.zoneHot]="hot() === zoneId('right', 'a')"></div>
+        <div [attr.data-zone]="zoneId('right', 'b')" class="zone" [class.zoneHot]="hot() === zoneId('right', 'b')"></div>
+    </div>
+    <div class="band bandBottom">
+        <div [attr.data-zone]="zoneId('bottom', 'a')" class="zone" [class.zoneHot]="hot() === zoneId('bottom', 'a')"></div>
+        <div [attr.data-zone]="zoneId('bottom', 'b')" class="zone" [class.zoneHot]="hot() === zoneId('bottom', 'b')"></div>
+    </div>
+</div>

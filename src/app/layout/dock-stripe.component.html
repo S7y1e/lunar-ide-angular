@@ -1,0 +1,15 @@
+<div class="stripe" [class.horizontal]="horizontal()">
+    @for (tool of tools(); track tool) {
+        <button
+            class="btn"
+            [class.active]="layout.isOpen(tool)"
+            [title]="label(tool)"
+            (pointerdown)="onPointerDown($event, tool)"
+        >
+            <mat-icon class="glyph">{{ icon(tool) }}</mat-icon>
+        </button>
+    }
+    <div class="footer">
+        <ng-content select="[footer]" />
+    </div>
+</div>

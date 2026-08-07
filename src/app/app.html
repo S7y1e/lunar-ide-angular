@@ -3,15 +3,16 @@
 
     @if (project.root()) {
         <div class="workbench">
-            <app-activity-bar>
+            <app-dock-stripe dock="left">
                 <button footer class="settingsBtn" title="Settings" (click)="settingsUi.open.set(true)">⚙</button>
-            </app-activity-bar>
+            </app-dock-stripe>
 
             <div class="body">
                 @if (layout.openSlots('left').length > 0) {
-                    <div class="side left">
+                    <div class="side left" [style.width.px]="leftWidth()">
                         <app-dock dock="left" />
                     </div>
+                    <app-resize-handle orientation="horizontal" (drag)="resizeLeft($event)" />
                 }
 
                 <div class="main">
@@ -20,16 +21,26 @@
                     </div>
 
                     @if (layout.openSlots('bottom').length > 0) {
-                        <div class="bottom">
+                        <app-resize-handle orientation="vertical" (drag)="resizeBottom($event)" />
+                        <div class="bottom" [style.height.px]="bottomHeight()">
                             <app-dock dock="bottom" />
                         </div>
                     }
+
+                    <app-dock-stripe dock="bottom" />
                 </div>
 
                 @if (layout.openSlots('right').length > 0) {
-                    <div class="side right">
+                    <app-resize-handle orientation="horizontal" (drag)="resizeRight($event)" />
+                    <div class="side right" [style.width.px]="rightWidth()">
                         <app-dock dock="right" />
                     </div>
+                }
+
+                <app-dock-stripe dock="right" />
+
+                @if (dockDrag.dragTool()) {
+                    <app-drop-overlay [hot]="dockDrag.hot()" />
                 }
             </div>
         </div>

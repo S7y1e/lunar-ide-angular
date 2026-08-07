@@ -14,10 +14,10 @@ describe('App', () => {
     expect(app).toBeTruthy();
   });
 
-  it('renders the activity bar', async () => {
+  it('renders the dock stripes', async () => {
     const fixture = TestBed.createComponent(App);
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('app-activity-bar')).toBeTruthy();
+    expect(compiled.querySelector('app-dock-stripe')).toBeTruthy();
   });
 });

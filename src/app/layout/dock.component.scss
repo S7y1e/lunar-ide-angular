@@ -2,9 +2,22 @@
     display: flex;
     flex-direction: column;
     height: 100%;
+}
+
+.dock.horizontal {
+    flex-direction: row;
+}
+
+.region {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    min-width: 0;
     background: var(--bg-chrome);
     border: 1px solid var(--border);
 }
+
 .header {
     display: flex;
     align-items: center;
@@ -18,7 +31,11 @@
     letter-spacing: 0.5px;
     color: var(--muted);
     border-bottom: 1px solid var(--divider);
+    cursor: grab;
+    user-select: none;
+    touch-action: none;
 }
+
 .close {
     border: none;
     background: transparent;
@@ -26,9 +43,11 @@
     cursor: pointer;
     font-size: 11px;
 }
+
 .close:hover {
     color: var(--text);
 }
+
 .content {
     flex: 1;
     min-height: 0;

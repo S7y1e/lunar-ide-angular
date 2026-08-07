@@ -191,6 +191,15 @@ export class EditorGroupsService {
         if (active) this.activeFile.set(remap(active));
     }
 
+    reorder(from: number, to: number): void {
+        this.files.update((files) => {
+            const next = [...files];
+            const [moved] = next.splice(from, 1);
+            next.splice(to, 0, moved);
+            return next;
+        });
+    }
+
     // Close a tab; if it was active, the tab that slides into its old index
     // becomes active (falling back to the one before it, then to none).
     close(path: string): void {

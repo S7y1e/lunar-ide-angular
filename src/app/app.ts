@@ -1,8 +1,8 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { ThemeService } from './core/theme.service';
 import { LayoutService } from './core/layout.service';
 import { ProjectService } from './core/project.service';
-import { ActivityBarComponent } from './activity-bar/activity-bar.component';
+import { DockStripeComponent } from './layout/dock-stripe.component';
 import { DockComponent } from './layout/dock.component';
 import { EditorAreaComponent } from './code-editor/editor-area.component';
 import { SettingsViewComponent } from './settings/settings-view.component';
@@ -26,12 +26,19 @@ import { GlobalKeybindingsService } from './search/global-keybindings.service';
 import { EditorNavigationService } from './code-editor/editor-navigation.service';
 import { LuauLspService } from './code-editor/luau-lsp/luau-lsp.service';
 import { StatusBarComponent } from './status-bar/status-bar.component';
+import { RuntimeMarkersService } from './runtime/runtime-markers.service';
+import { DockDragService } from './layout/dock-drag.service';
+import { DropOverlayComponent } from './layout/drop-overlay.component';
+import { ResizeHandleComponent } from './layout/resize-handle.component';
+
+const MIN_SIDE_WIDTH = 180;
+const MIN_BOTTOM_HEIGHT = 160;
 
 @Component({
     selector: 'app-root',
     standalone: true,
     imports: [
-        ActivityBarComponent,
+        DockStripeComponent,
         DockComponent,
         EditorAreaComponent,
         SettingsViewComponent,
@@ -44,6 +51,8 @@ import { StatusBarComponent } from './status-bar/status-bar.component';
         FigmaPreviewComponent,
         GitGraphOverlayComponent,
         StatusBarComponent,
+        DropOverlayComponent,
+        ResizeHandleComponent,
     ],
     templateUrl: './app.html',
     styleUrl: './app.scss',
@@ -62,6 +71,26 @@ export class App {
     private readonly globalKeybindings = inject(GlobalKeybindingsService);
     private readonly editorNavigation = inject(EditorNavigationService);
     private readonly luauLsp = inject(LuauLspService);
+    private readonly runtimeMarkers = inject(RuntimeMarkersService);
+    protected readonly dockDrag = inject(DockDragService);
+
+    // Panel sizes, session-only (not persisted) — matches react-resizable-panels'
+    // in-memory-only behavior in the original app.
+    protected readonly leftWidth = signal(260);
+    protected readonly rightWidth = signal(260);
+    protected readonly bottomHeight = signal(240);
+
+    protected resizeLeft(deltaPx: number): void {
+        this.leftWidth.update((w) => Math.max(MIN_SIDE_WIDTH, w + deltaPx));
+    }
+
+    protected resizeRight(deltaPx: number): void {
+        this.rightWidth.update((w) => Math.max(MIN_SIDE_WIDTH, w - deltaPx));
+    }
+
+    protected resizeBottom(deltaPx: number): void {
+        this.bottomHeight.update((h) => Math.max(MIN_BOTTOM_HEIGHT, h - deltaPx));
+    }
 
     protected onRefactorDone(kind: 'Renamed' | 'Moved', newAbs: string): void {
         const oldPath = this.editorGroups.activeFile();

@@ -70,14 +70,14 @@
             <app-terminal [cwd]="root" (close)="layout.toggle('terminal')" />
         } @else {
             <div class="placeholder">
-                <span class="glyph">⌨</span>
+                <mat-icon class="glyph">terminal</mat-icon>
                 <span>Open a folder first</span>
             </div>
         }
     }
     @default {
         <div class="placeholder">
-            <span class="glyph">{{ glyph() }}</span>
+            <mat-icon class="glyph">{{ icon() }}</mat-icon>
             <span>{{ label() }}</span>
             <span class="hint">not ported yet</span>
         </div>

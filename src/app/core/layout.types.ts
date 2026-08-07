@@ -54,3 +54,10 @@ export function defaultLayout(allTools: ToolId[]): LayoutState {
     ) as Record<ToolId, Placement>;
     return { placement, active: { 'left.a': 'project' } };
 }
+
+// Fill in any tool missing from a saved layout (e.g. a newly added tool window).
+export function withDefaults(allTools: ToolId[], saved: Partial<LayoutState>): LayoutState {
+    const defaults = defaultLayout(allTools);
+    const placement = { ...defaults.placement, ...(saved.placement ?? {}) };
+    return { placement, active: saved.active ?? { ...defaults.active } };
+}

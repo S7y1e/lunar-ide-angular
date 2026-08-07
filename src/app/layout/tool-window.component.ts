@@ -1,4 +1,5 @@
 import { Component, inject, input } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
 import { ToolId } from '../core/layout.types';
 import { LayoutService } from '../core/layout.service';
 import { ProjectService } from '../core/project.service';
@@ -33,6 +34,7 @@ import { ACTIVITY_VIEWS } from '../activity-bar/activity-views';
     selector: 'app-tool-window',
     standalone: true,
     imports: [
+        MatIconModule,
         FileTreeComponent,
         GitPanelComponent,
         TodoPanelComponent,
@@ -69,7 +71,7 @@ export class ToolWindowComponent {
         return ACTIVITY_VIEWS.find((v) => v.id === this.id())?.label ?? this.id();
     }
 
-    protected glyph(): string {
-        return ACTIVITY_VIEWS.find((v) => v.id === this.id())?.glyph ?? '❔';
+    protected icon(): string {
+        return ACTIVITY_VIEWS.find((v) => v.id === this.id())?.icon ?? 'help';
     }
 }
