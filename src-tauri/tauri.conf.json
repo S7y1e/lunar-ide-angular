@@ -28,7 +28,7 @@
     },
     "bundle": {
         "active": true,
-        "targets": ["nsis", "appimage", "deb", "rpm"],
+        "targets": ["nsis", "dmg", "appimage", "deb", "rpm"],
         "externalBin": [
             "binaries/rokit",
             "binaries/argon",
