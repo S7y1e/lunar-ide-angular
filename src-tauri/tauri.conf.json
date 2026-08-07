@@ -1,7 +1,7 @@
 {
     "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
     "productName": "Lunar Angular Preview",
-    "version": "0.0.0",
+    "version": "0.1.0",
     "identifier": "dev.S7y1e.lunar-ide-angular",
     "build": {
         "frontendDist": "../dist/lunar-ide-angular/browser",
