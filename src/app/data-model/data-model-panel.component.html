@@ -14,6 +14,7 @@
                 [selected]="selected()"
                 (toggle)="toggle($event)"
                 (select)="selected.set($event)"
+                (context)="menu.set($event)"
             />
         } @else {
             <div class="empty">
@@ -21,4 +22,13 @@
             </div>
         }
     </div>
+
+    @if (menu(); as m) {
+        <app-file-tree-context-menu
+            [x]="m.x"
+            [y]="m.y"
+            [items]="menuItems(m)"
+            (closed)="menu.set(null)"
+        />
+    }
 </div>

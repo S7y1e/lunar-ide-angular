@@ -1,4 +1,11 @@
-<div class="treeRow" [class.selected]="isSelected()" [title]="node().className" (click)="onRowClick()">
+<div
+    #row
+    class="treeRow"
+    [class.selected]="isSelected()"
+    [title]="node().className"
+    (click)="onRowClick()"
+    (contextmenu)="onContextMenu($event)"
+>
     <span class="indent" [style.width.px]="depth() * 12"></span>
 
     @if (hasChildren()) {
@@ -7,7 +14,7 @@
         <span class="chevronSpacer"></span>
     }
 
-    <span class="icon">{{ hasChildren() ? '📁' : '📄' }}</span>
+    <mat-icon class="icon" [style.color]="icon().color">{{ icon().glyph }}</mat-icon>
     <span class="nodeName">{{ node().name }}</span>
     @if (showClass()) {
         <span class="className">{{ node().className }}</span>
@@ -24,6 +31,7 @@
             [selected]="selected()"
             (toggle)="toggle.emit($event)"
             (select)="select.emit($event)"
+            (context)="context.emit($event)"
         />
     }
 }

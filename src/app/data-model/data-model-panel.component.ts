@@ -1,17 +1,31 @@
-import { Component, effect, inject, signal } from '@angular/core';
+import { Component, effect, inject, signal, untracked } from '@angular/core';
+import { join } from '@tauri-apps/api/path';
 import { DataModelService } from './data-model.service';
 import { ProjectService } from '../core/project.service';
 import { EditorGroupsService } from '../core/editor-groups.service';
 import { toRelative } from '../core/path';
-import { defaultExpanded, findInstanceChain, keyOf } from '../core/instance-path';
-import { DataModelTreeNodeComponent } from './data-model-tree-node.component';
+import {
+    defaultExpanded,
+    findInstanceChain,
+    instancePath,
+    keyOf,
+    requireSnippet,
+    scriptPath,
+} from '../core/instance-path';
+import { DataModelTreeNodeComponent, NodeContext } from './data-model-tree-node.component';
+import { FileTreeContextMenuComponent, MenuItem } from '../file-tree/file-tree-context-menu.component';
 
-// Simplified port of data-model-panel.tsx — no right-click context menu yet
-// (copy instance path / require snippet).
+const copy = (text: string): void => {
+    navigator.clipboard
+        ?.writeText(text)
+        .catch((e) => console.warn('[datamodel] clipboard write failed', e));
+};
+
+// Angular port of data-model-panel.tsx.
 @Component({
     selector: 'app-data-model-panel',
     standalone: true,
-    imports: [DataModelTreeNodeComponent],
+    imports: [DataModelTreeNodeComponent, FileTreeContextMenuComponent],
     templateUrl: './data-model-panel.component.html',
     styleUrl: './data-model-panel.component.scss',
 })
@@ -22,9 +36,20 @@ export class DataModelPanelComponent {
 
     protected readonly expanded = signal<Set<string>>(new Set());
     protected readonly selected = signal<string | null>(null);
+    protected readonly menu = signal<NodeContext | null>(null);
     private seeded = false;
 
     constructor() {
+        // A new project gets its own seeding pass — otherwise the second project
+        // opened in a session keeps the first one's expansion and selection.
+        effect(() => {
+            this.project.root();
+            untracked(() => {
+                this.seeded = false;
+                this.selected.set(null);
+            });
+        });
+
         // Seed the default (2-level) expansion once per tree load.
         effect(() => {
             const tree = this.dataModel.tree();
@@ -63,5 +88,34 @@ export class DataModelPanelComponent {
 
     protected collapseAll(): void {
         this.expanded.set(new Set());
+    }
+
+    protected menuItems(ctx: NodeContext): MenuItem[] {
+        // "game.Foo.Bar" only makes sense when the tree really is rooted at the
+        // DataModel; a partial sourcemap gets its own root name instead.
+        const rootIsGame = this.dataModel.tree()?.className === 'DataModel';
+        const items: MenuItem[] = [];
+        const source = scriptPath(ctx.node);
+        const root = this.project.root();
+
+        if (source && root) {
+            items.push({
+                label: 'Open File',
+                onClick: async () => {
+                    this.editorGroups.openFile(await join(root, ...source.split('/')));
+                },
+            });
+        }
+        items.push({
+            label: 'Copy Instance Path',
+            onClick: () => copy(instancePath(ctx.chain, rootIsGame)),
+        });
+        if (ctx.node.className === 'ModuleScript') {
+            items.push({
+                label: 'Copy require()',
+                onClick: () => copy(requireSnippet(ctx.chain, rootIsGame)),
+            });
+        }
+        return items;
     }
 }

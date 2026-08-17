@@ -34,7 +34,11 @@
     flex: none;
 }
 .icon {
-    font-size: 12px;
+    flex: none;
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+    line-height: 14px;
 }
 .nodeName {
     overflow: hidden;
