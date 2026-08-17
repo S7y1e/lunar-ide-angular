@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit, computed, inject, input, signal } from '@angular/core';
 import { ProjectFile, walkProjectFiles } from '../core/filesystem';
 import { FileTreeSelectionService } from './file-tree-selection.service';
+import { fileIconFor } from './file-icons';
 
 // Subsequence (fuzzy) match against the relative path, like a command palette.
 function fuzzy(needle: string, hay: string): boolean {
@@ -21,6 +22,7 @@ export class FileTreeFilteredComponent implements OnInit, OnDestroy {
     readonly query = input.required<string>();
 
     protected readonly selection = inject(FileTreeSelectionService);
+    protected readonly fileIconFor = fileIconFor;
     private readonly files = signal<ProjectFile[]>([]);
     private active = true;
 

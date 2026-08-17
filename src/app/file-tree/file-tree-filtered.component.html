@@ -9,7 +9,7 @@
             (click)="open(f)"
         >
             <span class="chevronSpacer"></span>
-            <span class="icon">📄</span>
+            <img class="nodeIcon" [src]="fileIconFor(f.name)" alt="" draggable="false" />
             <span class="nodeName">{{ f.name }}</span>
             <span class="filterPath">{{ f.relativePath }}</span>
         </div>

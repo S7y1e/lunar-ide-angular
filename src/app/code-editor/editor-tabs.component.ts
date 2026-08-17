@@ -1,6 +1,7 @@
 import { Component, ElementRef, ViewChild, inject, signal } from '@angular/core';
 import { EditorGroupsService } from '../core/editor-groups.service';
 import { baseName } from '../core/path';
+import { fileIconFor } from '../file-tree/file-icons';
 
 // Movement (px) required before a press is treated as a drag instead of a click.
 const DRAG_THRESHOLD = 4;
@@ -16,6 +17,7 @@ const DRAG_THRESHOLD = 4;
 export class EditorTabsComponent {
     protected readonly groups = inject(EditorGroupsService);
     protected readonly baseName = baseName;
+    protected readonly fileIconFor = fileIconFor;
 
     protected readonly draggingPath = signal<string | null>(null);
 

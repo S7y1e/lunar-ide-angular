@@ -13,7 +13,7 @@
         <span class="chevronSpacer"></span>
     }
 
-    <span class="icon">{{ node().isDir ? '📁' : '📄' }}</span>
+    <img class="nodeIcon" [src]="resolveFileIcon(node(), expanded())" alt="" draggable="false" />
 
     @if (renaming()) {
         <app-file-tree-name-input [initial]="node().name" (submitted)="submitRename($event)" (cancelled)="renaming.set(false)" />
@@ -29,7 +29,12 @@
     @if (creating(); as kind) {
         <div class="treeRow" [style.paddingLeft.px]="(depth() + 1) * 12 + 8">
             <span class="chevronSpacer"></span>
-            <span class="icon">{{ kind === 'folder' ? '📁' : '📄' }}</span>
+            <img
+                class="nodeIcon"
+                [src]="resolveFileIcon({ name: '', path: '', isDir: kind === 'folder' }, false)"
+                alt=""
+                draggable="false"
+            />
             <app-file-tree-name-input initial="" (submitted)="submitCreate($event)" (cancelled)="creating.set(null)" />
         </div>
     }

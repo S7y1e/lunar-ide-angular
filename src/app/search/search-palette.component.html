@@ -37,7 +37,7 @@
                                 }
                             }
                             @default {
-                                <span class="icon">📄</span>
+                                <img class="nodeIcon" [src]="fileIconFor(item.file.name)" alt="" draggable="false" />
                                 <span class="paletteName">
                                     @if (highlightSegments(item.file.name, palette.query().trim()); as seg) {
                                         {{ seg.pre }}<mark>{{ seg.match }}</mark>{{ seg.post }}

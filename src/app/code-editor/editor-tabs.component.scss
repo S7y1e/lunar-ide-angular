@@ -5,6 +5,12 @@
     border-bottom: 1px solid var(--divider);
     flex: none;
 }
+.tabIcon {
+    flex-shrink: 0;
+    width: 14px;
+    height: 14px;
+}
+
 .tab {
     display: flex;
     align-items: center;

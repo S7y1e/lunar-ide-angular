@@ -45,8 +45,10 @@
 .paletteItem.paletteItemActive {
     background: var(--hover);
 }
-.icon {
-    font-size: 12px;
+.nodeIcon {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
 }
 .paletteName {
     color: var(--text);

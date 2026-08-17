@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { PaletteItem, PaletteService, Scope } from './palette.service';
 import { EditorGroupsService } from '../core/editor-groups.service';
 import { highlightSegments } from './highlight';
+import { fileIconFor } from '../file-tree/file-icons';
 import { PaletteTabsComponent } from './palette-tabs.component';
 
 const PLACEHOLDER: Record<Scope, string> = {
@@ -24,6 +25,7 @@ export class SearchPaletteComponent {
     private readonly editorGroups = inject(EditorGroupsService);
     protected readonly placeholder = PLACEHOLDER;
     protected readonly highlightSegments = highlightSegments;
+    protected readonly fileIconFor = fileIconFor;
 
     protected choose(index: number): void {
         const item = this.palette.items()[index];

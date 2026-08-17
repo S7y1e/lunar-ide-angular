@@ -14,6 +14,7 @@
             [class.dragging]="path === draggingPath()"
             (pointerdown)="startDrag($event, i)"
         >
+            <img class="tabIcon" [src]="fileIconFor(baseName(path))" alt="" draggable="false" />
             <span class="name">{{ baseName(path) }}</span>
             <button
                 class="close"

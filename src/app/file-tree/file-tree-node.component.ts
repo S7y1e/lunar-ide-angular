@@ -17,6 +17,7 @@ import { canonicalPath } from '../core/monaco-uri';
 import { FileTreeSelectionService } from './file-tree-selection.service';
 import { FileTreeContextMenuComponent, MenuItem } from './file-tree-context-menu.component';
 import { FileTreeNameInputComponent } from './file-tree-name-input.component';
+import { resolveFileIcon } from './file-icons';
 
 // Angular port of file-tree/file-tree-node.tsx + use-tree-node.ts (merged:
 // this codebase folds a React hook straight into the owning component).
@@ -40,6 +41,7 @@ export class FileTreeNodeComponent implements OnInit {
     readonly changed = output<void>();
 
     protected readonly selection = inject(FileTreeSelectionService);
+    protected readonly resolveFileIcon = resolveFileIcon;
 
     protected readonly expanded = signal(false);
     protected readonly children = signal<FileNode[]>([]);
