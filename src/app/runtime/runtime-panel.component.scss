@@ -31,9 +31,28 @@
 .chip.off {
     color: var(--muted);
 }
-.chip.play {
-    background: var(--accent);
-    color: white;
+.playBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 9px;
+    border: none;
+    border-radius: 5px;
+    background: var(--success);
+    color: var(--text-bright);
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+}
+.playBtn:hover:not(:disabled) {
+    filter: brightness(1.1);
+}
+.playBtn:disabled {
+    opacity: 0.6;
+    cursor: default;
+}
+.playBtn.stopBtn {
+    background: var(--danger);
 }
 .clear {
     border: none;

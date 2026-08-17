@@ -5,6 +5,7 @@ import { groupMessages } from './error-group';
 import { ErrorCardComponent } from './error-card.component';
 import { RuntimeLineComponent } from './runtime-line.component';
 import { runtimeEnqueue } from '../core/project-queries';
+import { StudioPlayService } from './studio-play.service';
 
 @Component({
     selector: 'app-runtime-panel',
@@ -15,6 +16,7 @@ import { runtimeEnqueue } from '../core/project-queries';
 })
 export class RuntimePanelComponent {
     protected readonly bridge = inject(RuntimeBridgeService);
+    protected readonly studio = inject(StudioPlayService);
 
     protected readonly hideNoise = signal(true);
     protected readonly filter = signal('');

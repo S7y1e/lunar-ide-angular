@@ -108,6 +108,17 @@ export const getProjectDataModel = (): Promise<DataModelNode | null> =>
 export const runtimeEnqueue = (command: object): Promise<void> =>
     invoke('runtime_enqueue', { command: JSON.stringify(command) });
 
+// Drives a play-test by focusing the Roblox Studio window and sending F5 /
+// Shift+F5 — there is no Roblox API for it. Windows-only; rejects elsewhere.
+export const studioPlay = (stop: boolean): Promise<void> => invoke('studio_play', { stop });
+
+// Writes (removes) a LocalScript in the project's client container that streams
+// the play-test client's output to the bridge. The Studio plugin runs in the
+// server/edit VM and can't see the client's output at all.
+export const clientAgentInstall = (): Promise<void> => invoke('client_agent_install');
+
+export const clientAgentRemove = (): Promise<void> => invoke('client_agent_remove');
+
 export type LogpointArg = { file: string; line: number; expr: string; includeStack: boolean };
 
 export const logpointsArm = (points: LogpointArg[]): Promise<void> =>

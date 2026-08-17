@@ -2,12 +2,22 @@
     <div class="header">
         <span class="title">Runtime</span>
         <span class="statusRow">
+            <button
+                class="playBtn"
+                [class.stopBtn]="bridge.playtest()"
+                [disabled]="studio.busy()"
+                [title]="
+                    bridge.playtest()
+                        ? 'Stop play-test (Shift+F5)'
+                        : 'Play-test in Studio (F5, then focus returns here)'
+                "
+                (click)="studio.play(bridge.playtest())"
+            >
+                {{ bridge.playtest() ? '⏹ Stop' : '▶ Play' }}
+            </button>
             <span class="chip" [class.on]="bridge.running()" [class.off]="!bridge.running()">
                 {{ bridge.running() ? 'Listening · :' + bridge.port() : 'Offline' }}
             </span>
-            @if (bridge.playtest()) {
-                <span class="chip play">▶ Play-test</span>
-            }
             <button class="clear" title="Clear output" (click)="bridge.clear()">🗑</button>
         </span>
     </div>
