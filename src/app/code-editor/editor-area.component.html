@@ -3,6 +3,23 @@
 }
 @if (groups.activeFile(); as path) {
     <app-breadcrumbs [path]="path" />
+
+    @if (groups.saveError(); as err) {
+        <div class="saveErrorBanner">Save failed: {{ err }}</div>
+    }
+
+    @if (groups.externalChange()) {
+        <div class="conflictBanner">
+            <span class="conflictText">
+                This file changed on disk{{ groups.dirtyFiles().has(path) ? ' (you have unsaved edits)' : '' }}.
+            </span>
+            <div class="conflictActions">
+                <button class="conflictReload" (click)="groups.reloadFromDisk()">Reload</button>
+                <button class="conflictKeep" (click)="groups.keepMine()">Keep mine</button>
+            </div>
+        </div>
+    }
+
     <app-monaco-editor
         class="pane"
         [path]="path"

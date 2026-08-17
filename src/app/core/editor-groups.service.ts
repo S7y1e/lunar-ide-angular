@@ -2,12 +2,15 @@ import { Injectable, computed, effect, inject, signal } from '@angular/core';
 import { join } from '@tauri-apps/api/path';
 import { exists } from '@tauri-apps/plugin-fs';
 import * as monaco from 'monaco-editor';
-import { readFileText, writeFileText } from './filesystem';
+import { readFileTextRetry, writeFileTextRetry } from './filesystem';
+import { ProjectWatcherService } from './project-watcher.service';
 import { ProjectService } from './project.service';
 import { pathToUri } from './monaco-uri';
 import { readSession, writeSession } from './session-store';
+import { sameText, toLf } from './text';
 
 const SESSION_SAVE_DELAY_MS = 400;
+const FILE_WATCH_DELAY_MS = 150;
 
 // Dispose the Monaco model backing `path`, if one was ever created (a file
 // that was opened at least once) — this is what tells the luau-lsp client
@@ -22,12 +25,15 @@ function remapMap(m: Map<string, string>, remap: (p: string) => string): Map<str
     return next;
 }
 
-// Angular port of use-editor-groups.ts + use-file-content.ts, scoped down: one
-// group (no split-editor yet — see gap #3 in the port status notes), no
-// external-change detection. Each open file keeps its own in-memory buffer so
-// switching tabs doesn't discard unsaved edits — the original bug this
-// version avoids by keying content per path instead of holding a single
-// "current content" slot.
+// Angular port of use-editor-groups.ts + use-file-content.ts, scoped down to
+// one group (no split-editor — see gap #3 in the port status notes). Each open
+// file keeps its own in-memory buffer so switching tabs doesn't discard
+// unsaved edits — the original bug this version avoids by keying content per
+// path instead of holding a single "current content" slot.
+//
+// Because state here is already per-path, external-change detection watches
+// *every* open file rather than only the active one like the React hook did:
+// a background tab is just as exposed to Argon rewriting it from Studio.
 @Injectable({ providedIn: 'root' })
 export class EditorGroupsService {
     private readonly project = inject(ProjectService);
@@ -39,6 +45,22 @@ export class EditorGroupsService {
     private readonly buffers = signal<Map<string, string>>(new Map());
     private readonly savedContent = signal<Map<string, string>>(new Map());
 
+    // What we believe is currently on disk per path. Used to tell our own
+    // writes apart from external ones and to avoid re-prompting.
+    private readonly diskContent = signal<Map<string, string>>(new Map());
+    // Pending external changes: the file changed on disk (e.g. Argon synced it
+    // from Studio) and we're waiting for the user to decide. Holds the new disk
+    // contents per path; absent when there's nothing to reconcile.
+    private readonly externalContent = signal<Map<string, string>>(new Map());
+    // Last save error per path, surfaced to the UI so failures aren't silent.
+    private readonly saveErrors = signal<Map<string, string>>(new Map());
+
+    // Files whose contents were successfully read at least once. A file that
+    // never loaded must not be saved — its buffer is empty/unknown and writing
+    // it would wipe the real content on disk.
+    private readonly loaded = new Set<string>();
+    private readonly watcher = inject(ProjectWatcherService);
+
     // Session restore/persist is per project; this guards the first (restore)
     // pass after a project opens so it isn't immediately overwritten by the
     // persist effect before the restored session has loaded.
@@ -48,6 +70,17 @@ export class EditorGroupsService {
     readonly content = computed(() => {
         const path = this.activeFile();
         return path ? (this.buffers().get(path) ?? '') : '';
+    });
+
+    // Banner state for the active file.
+    readonly externalChange = computed(() => {
+        const path = this.activeFile();
+        return path !== null && this.externalContent().has(path);
+    });
+
+    readonly saveError = computed(() => {
+        const path = this.activeFile();
+        return path ? (this.saveErrors().get(path) ?? null) : null;
     });
 
     readonly dirtyFiles = computed(() => {
@@ -75,6 +108,10 @@ export class EditorGroupsService {
             this.activeFile.set(null);
             this.buffers.set(new Map());
             this.savedContent.set(new Map());
+            this.diskContent.set(new Map());
+            this.externalContent.set(new Map());
+            this.saveErrors.set(new Map());
+            this.loaded.clear();
             if (!root) {
                 this.restored = true;
                 return;
@@ -110,6 +147,22 @@ export class EditorGroupsService {
                 writeSession(root, { files, active });
             }, SESSION_SAVE_DELAY_MS);
         });
+
+        // The shared project watcher already covers every file under the root,
+        // so open tabs are a filter on it rather than a watch each.
+        this.watcher.subscribe(
+            (path) => this.files().includes(path),
+            FILE_WATCH_DELAY_MS,
+            (paths) => {
+                for (const path of paths) this.onDiskEvent(path);
+            },
+        );
+    }
+
+    private onDiskEvent(path: string): void {
+        readFileTextRetry(path)
+            .then((raw) => this.ingest(path, raw))
+            .catch(() => {});
     }
 
     openFile(path: string): void {
@@ -131,17 +184,87 @@ export class EditorGroupsService {
 
     select(path: string): void {
         this.activeFile.set(path);
-        if (this.buffers().has(path)) return; // already loaded — keep in-memory edits
+        if (this.loaded.has(path)) return; // already loaded — keep in-memory edits
         this.loading.set(true);
-        readFileText(path)
-            .then((text) => {
-                this.buffers.update((m) => new Map(m).set(path, text));
-                this.savedContent.update((m) => new Map(m).set(path, text));
-            })
+        readFileTextRetry(path)
+            .then((raw) => this.ingest(path, raw))
             .catch((e) => {
-                this.buffers.update((m) => new Map(m).set(path, `// failed to read file: ${e}`));
+                // Deliberately leaves the file *unloaded* so save() refuses to
+                // touch it. Writing an error string into the buffer instead
+                // would overwrite the real file the moment the user hits save.
+                console.error('[file] read failed', path, e);
             })
             .finally(() => this.loading.set(false));
+    }
+
+    // Load a file the first time it's opened (or recover if an earlier read
+    // failed). Returning to an already-loaded file keeps its in-memory buffer
+    // and only reconciles disk changes that happened in the background.
+    private ingest(path: string, raw: string): void {
+        if (this.loaded.has(path)) {
+            this.reconcile(path, raw);
+            return;
+        }
+        this.loaded.add(path);
+        const text = toLf(raw);
+        this.diskContent.update((m) => new Map(m).set(path, text));
+        this.buffers.update((m) => new Map(m).set(path, text));
+        this.savedContent.update((m) => new Map(m).set(path, text));
+    }
+
+    // Reconcile a disk change against the buffer, VS Code style:
+    //  - identical (modulo EOL) to what we already have: no-op.
+    //  - no unsaved edits: reload silently (nothing to lose).
+    //  - unsaved edits present: surface a prompt; never clobber the buffer.
+    private reconcile(path: string, raw: string): void {
+        const disk = toLf(raw);
+        const knownDisk = this.diskContent().get(path) ?? '';
+        if (sameText(disk, knownDisk)) return;
+        this.diskContent.update((m) => new Map(m).set(path, disk));
+
+        const buffer = this.buffers().get(path) ?? '';
+        if (sameText(disk, buffer)) {
+            // Our own write came back through the watcher (possibly with EOLs
+            // rewritten) — adopt it as saved rather than prompting.
+            this.savedContent.update((m) => new Map(m).set(path, disk));
+            this.clearExternal(path);
+            return;
+        }
+
+        const dirty = buffer !== (this.savedContent().get(path) ?? '');
+        if (!dirty) {
+            this.buffers.update((m) => new Map(m).set(path, disk));
+            this.savedContent.update((m) => new Map(m).set(path, disk));
+            this.clearExternal(path);
+            return;
+        }
+        this.externalContent.update((m) => new Map(m).set(path, disk));
+    }
+
+    private clearExternal(path: string): void {
+        if (!this.externalContent().has(path)) return;
+        this.externalContent.update((m) => {
+            const n = new Map(m);
+            n.delete(path);
+            return n;
+        });
+    }
+
+    // Accept the disk version, replacing the buffer.
+    reloadFromDisk(path: string | null = this.activeFile()): void {
+        if (!path) return;
+        const disk = this.externalContent().get(path);
+        if (disk === undefined) return;
+        this.diskContent.update((m) => new Map(m).set(path, disk));
+        this.buffers.update((m) => new Map(m).set(path, disk));
+        this.savedContent.update((m) => new Map(m).set(path, disk));
+        this.clearExternal(path);
+    }
+
+    // Keep the editor's version. The change stays dismissed until the file
+    // changes on disk again; a save will push our version back out.
+    keepMine(path: string | null = this.activeFile()): void {
+        if (path) this.clearExternal(path);
     }
 
     setContent(text: string): void {
@@ -152,10 +275,37 @@ export class EditorGroupsService {
 
     async save(path: string | null = this.activeFile()): Promise<void> {
         if (!path) return;
+        // Never write a file we couldn't read: its buffer is empty/unknown and
+        // saving would wipe the real content on disk.
+        if (!this.loaded.has(path)) {
+            this.setSaveError(
+                path,
+                'File not loaded yet (still locked by the sync tool?) — not saving to avoid overwriting it.',
+            );
+            return;
+        }
         const text = this.buffers().get(path);
         if (text === undefined) return;
-        await writeFileText(path, text);
+        try {
+            await writeFileTextRetry(path, text);
+        } catch (e) {
+            this.setSaveError(path, String(e));
+            throw e;
+        }
+        this.diskContent.update((m) => new Map(m).set(path, text));
         this.savedContent.update((m) => new Map(m).set(path, text));
+        this.setSaveError(path, null);
+        // Saving makes our version authoritative, clearing any pending prompt.
+        this.clearExternal(path);
+    }
+
+    private setSaveError(path: string, message: string | null): void {
+        this.saveErrors.update((m) => {
+            const n = new Map(m);
+            if (message === null) n.delete(path);
+            else n.set(path, message);
+            return n;
+        });
     }
 
     // Writes only the dirty buffers — every buffer already holds the in-memory
@@ -196,9 +346,19 @@ export class EditorGroupsService {
             if (remap(path) !== path) disposeModelFor(path);
         }
 
+        for (const path of [...this.loaded]) {
+            const next = remap(path);
+            if (next === path) continue;
+            this.loaded.delete(path);
+            this.loaded.add(next);
+        }
+
         this.files.update((files) => files.map(remap));
         this.buffers.update((m) => remapMap(m, remap));
         this.savedContent.update((m) => remapMap(m, remap));
+        this.diskContent.update((m) => remapMap(m, remap));
+        this.externalContent.update((m) => remapMap(m, remap));
+        this.saveErrors.update((m) => remapMap(m, remap));
         const active = this.activeFile();
         if (active) this.activeFile.set(remap(active));
     }
@@ -220,16 +380,17 @@ export class EditorGroupsService {
         if (idx === -1) return;
         disposeModelFor(path);
         this.files.set(files.filter((p) => p !== path));
-        this.buffers.update((m) => {
+        this.loaded.delete(path);
+        const drop = (m: Map<string, string>): Map<string, string> => {
             const n = new Map(m);
             n.delete(path);
             return n;
-        });
-        this.savedContent.update((m) => {
-            const n = new Map(m);
-            n.delete(path);
-            return n;
-        });
+        };
+        this.buffers.update(drop);
+        this.savedContent.update(drop);
+        this.diskContent.update(drop);
+        this.externalContent.update(drop);
+        this.saveErrors.update(drop);
         if (this.activeFile() !== path) return;
         const remaining = this.files();
         const next = remaining[idx] ?? remaining[idx - 1] ?? null;

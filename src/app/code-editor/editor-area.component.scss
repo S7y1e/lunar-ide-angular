@@ -7,6 +7,63 @@
     flex: 1;
     min-height: 0;
 }
+.saveErrorBanner {
+    flex-shrink: 0;
+    padding: 6px 12px;
+    background: rgba(220, 80, 80, 0.12);
+    border-bottom: 1px solid rgba(220, 80, 80, 0.4);
+    border-left: 2px solid #dc5050;
+    color: #ff9b9b;
+    font-size: 12px;
+    font-family: monospace;
+    word-break: break-word;
+}
+
+.conflictBanner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-shrink: 0;
+    padding: 6px 12px;
+    background: var(--bg-chrome);
+    border-bottom: 1px solid var(--divider);
+    border-left: 2px solid var(--accent);
+    font-size: 12px;
+    color: var(--text);
+}
+
+.conflictText {
+    color: var(--muted);
+}
+
+.conflictActions {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.conflictReload,
+.conflictKeep {
+    padding: 3px 10px;
+    font-size: 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid var(--divider);
+    background: transparent;
+    color: var(--text);
+}
+
+.conflictReload:hover,
+.conflictKeep:hover {
+    background: var(--hover);
+}
+
+.conflictReload {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
 .empty {
     flex: 1;
     display: flex;
