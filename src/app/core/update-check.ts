@@ -1,6 +1,9 @@
 import { getVersion } from '@tauri-apps/api/app';
 
-const REPO = 'S7y1e/Lunar-IDE';
+// Where 5.0.0 and later are published. Not the old S7y1e/Lunar-IDE repo, whose
+// releases stop at the React 4.2.0 build — pointing here at that one would make
+// every check conclude "nothing newer" and never notify.
+const REPO = 'S7y1e/lunar-ide-angular';
 
 export type UpdateInfo = { version: string; url: string };
 
