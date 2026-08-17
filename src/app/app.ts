@@ -27,6 +27,9 @@ import { EditorNavigationService } from './code-editor/editor-navigation.service
 import { LuauLspService } from './code-editor/luau-lsp/luau-lsp.service';
 import { StatusBarComponent } from './status-bar/status-bar.component';
 import { RuntimeMarkersService } from './runtime/runtime-markers.service';
+import { InsightsMarkersService } from './insights/insights-markers.service';
+import { StudioPlayService } from './runtime/studio-play.service';
+import { UpdateCheckService } from './core/update-check.service';
 import { DockDragService } from './layout/dock-drag.service';
 import { DropOverlayComponent } from './layout/drop-overlay.component';
 import { ResizeHandleComponent } from './layout/resize-handle.component';
@@ -72,6 +75,14 @@ export class App {
     private readonly editorNavigation = inject(EditorNavigationService);
     private readonly luauLsp = inject(LuauLspService);
     private readonly runtimeMarkers = inject(RuntimeMarkersService);
+    // Eager, like runtimeMarkers: it paints the editor, so it must run whether
+    // or not the Insights panel was ever opened.
+    private readonly insightsMarkers = inject(InsightsMarkersService);
+    // Eager: its leftover-agent/logpoint cleanup must run on project open even
+    // when the Runtime panel was never opened.
+    private readonly studioPlay = inject(StudioPlayService);
+    // Eager: fires the one-shot startup update check.
+    private readonly updateCheck = inject(UpdateCheckService);
     protected readonly dockDrag = inject(DockDragService);
 
     // Panel sizes, session-only (not persisted) — matches react-resizable-panels'

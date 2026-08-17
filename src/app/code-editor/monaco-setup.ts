@@ -1,5 +1,6 @@
 import { registerMonacoThemes } from './monaco-themes';
 import { registerLuauLanguage } from './luau-language';
+import { registerUiAutocomplete } from './ui-autocomplete/provider';
 
 // Modern bundler-agnostic worker wiring (works with both Vite's dev server and
 // esbuild's production build) — no webpack plugin or static asset copy needed,
@@ -12,6 +13,8 @@ export function configureMonacoEnvironment(): void {
 
     registerMonacoThemes();
     registerLuauLanguage();
+    // UI-library (Fusion/vide/React) prop completion, independent of luau-lsp.
+    registerUiAutocomplete();
 
     // Two constraints force the shape of the calls below, and breaking
     // either one fails *only* in the packaged app — never under `ng serve`,
