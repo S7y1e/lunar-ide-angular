@@ -1,8 +1,8 @@
 {
     "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
-    "productName": "Lunar Angular Preview",
-    "version": "0.1.0",
-    "identifier": "dev.S7y1e.lunar-ide-angular",
+    "productName": "Lunar",
+    "version": "5.0.0",
+    "identifier": "dev.S7y1e.lunar-ide",
     "build": {
         "frontendDist": "../dist/lunar-ide-angular/browser",
         "devUrl": "http://localhost:4200",
@@ -12,7 +12,7 @@
     "app": {
         "windows": [
             {
-                "title": "Lunar (Angular preview)",
+                "title": "Lunar",
                 "width": 800,
                 "height": 600,
                 "minWidth": 800,
@@ -50,6 +50,9 @@
             "nsis": {
                 "installMode": "perMachine"
             }
+        },
+        "android": {
+            "debugApplicationIdSuffix": ".debug"
         }
     }
 }

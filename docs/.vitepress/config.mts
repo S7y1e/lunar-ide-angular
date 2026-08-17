@@ -1,7 +1,7 @@
 import { defineConfig } from 'vitepress'
 
 export default defineConfig({
-  title: "Lunar IDE (Angular Preview)",
+  title: "Lunar IDE",
   description: "A real IDE for Roblox development",
   base: '/lunar-ide-angular/',
   themeConfig: {

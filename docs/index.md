@@ -3,7 +3,7 @@
 layout: home
 
 hero:
-  name: "Lunar IDE Docs (Angular Preview)"
+  name: "Lunar IDE Docs"
   tagline: A guide for all the features of lunar
   actions:
     - theme: brand

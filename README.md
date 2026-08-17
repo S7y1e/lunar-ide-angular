@@ -1,59 +1,96 @@
-# LunarIdeAngular
+# Lunar IDE
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.1.3.
+My own IDE for Luau — built with Tauri, Angular, and Monaco Editor.
 
-## Development server
+A personal project for an IDE that meets my needs for working with Roblox Studio.
+It will always be free and source-available.
 
-To start a local development server, run:
+## Features
 
-```bash
-ng serve
-```
+- **Luau editor** powered by Monaco, with [luau-lsp](https://github.com/JohnnyMorganz/luau-lsp)
+  for autocomplete, diagnostics, and hover info
+- **UI-library autocomplete** for Fusion, vide, and React props and events
+- **File explorer** with tabs, context menu, rename/create/delete
+- **Command palette** and fuzzy file search
+- **Integrated terminal** (xterm.js + native PTY)
+- **Sync to Roblox Studio** via bundled [Rojo](https://github.com/rojo-rbx/rojo)
+  or [Argon](https://github.com/argon-rbx/argon) servers
+- **Toolchain manager** powered by [Rokit](https://github.com/rojo-rbx/rokit) —
+  install tools like StyLua, Selene, Wally, Lune, and more
+- **Themes** — Nord, Dracula, and Studio
+- **Cross-platform** — Windows, macOS, and Linux
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Tech Stack
 
-## Code scaffolding
+- **Frontend:** Angular 22 + TypeScript
+- **Editor:** Monaco Editor
+- **Backend:** Tauri 2 (Rust)
+- **Language Server:** luau-lsp
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Getting Started
 
-```bash
-ng generate component component-name
-```
+### Prerequisites
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+- [Node.js](https://nodejs.org/)
+- [Bun](https://bun.sh/) — only for `download-binaries`
+- [Rust](https://www.rust-lang.org/tools/install)
+- Tauri system dependencies — see the [Tauri prerequisites guide](https://tauri.app/start/prerequisites/)
 
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+### Installation
 
 ```bash
-ng test
+# Install dependencies
+npm ci
+
+# Download bundled tool binaries (luau-lsp, rojo, argon, rokit)
+npm run download-binaries
 ```
 
-## Running end-to-end tests
+> `download-binaries` uses [Bun](https://bun.sh/) to fetch the releases for every
+> supported platform into `src-tauri/binaries/`, and marks them executable. The
+> copies committed to git are not executable, so this step is required before the
+> app can spawn any of its sidecars.
 
-For end-to-end (e2e) testing, run:
+### Development
 
 ```bash
-ng e2e
+npm run tauri dev
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+### Build
 
-## Additional Resources
+```bash
+npm run tauri build
+```
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+### Tests
+
+```bash
+npm test
+```
+
+## Acknowledgements
+
+Lunar bundles and builds on top of these open source projects:
+
+- [Tauri](https://github.com/tauri-apps/tauri) — MIT / Apache-2.0
+- [Angular](https://github.com/angular/angular) — MIT
+- [Monaco Editor](https://github.com/microsoft/monaco-editor) — MIT
+- [luau-lsp](https://github.com/JohnnyMorganz/luau-lsp) — MIT
+- [Luau](https://github.com/luau-lang/luau) — MIT
+- [Rojo](https://github.com/rojo-rbx/rojo) — MPL-2.0
+- [Argon](https://github.com/argon-rbx/argon) — Apache-2.0
+- [Rokit](https://github.com/rojo-rbx/rokit) — MPL-2.0
+- [xterm.js](https://github.com/xtermjs/xterm.js) — MIT
+
+### Icons & Fonts
+
+- [charmed-icons](https://github.com/littensy/charmed-icons) by Littensy — MIT (file-tree icons)
+- [Material Symbols](https://github.com/google/material-design-icons) — Apache-2.0
+- [Inter](https://github.com/rsms/inter) — SIL Open Font License 1.1
+- [JetBrains Mono](https://github.com/JetBrains/JetBrainsMono) — SIL Open Font License 1.1
+
+## License
+
+[PolyForm Noncommercial 1.0.0](LICENSE) — free to use, modify, and share for any
+**noncommercial** purpose. Selling Lunar, or any product built on it, is not permitted.

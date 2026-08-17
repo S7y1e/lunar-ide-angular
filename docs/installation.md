@@ -1,9 +1,10 @@
 # Installation
 
-## Lunar IDE (Angular Preview)
-This is the Angular rewrite of Lunar IDE — same features, same Rust/Tauri backend, different
-frontend. To install it, go to the [releases page](https://github.com/S7y1e/lunar-ide-angular/releases)
+## Lunar IDE
+To install Lunar, go to the [releases page](https://github.com/S7y1e/lunar-ide-angular/releases)
 and download the executable for your OS.
+
+Arch users can build from the `PKGBUILD` at the repository root instead.
 
 > Some features require the plugins below to work.
 
