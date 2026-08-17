@@ -4,7 +4,12 @@ import { PackageList, ShellRun, projectPackages, wallyInstall, wallyUpdate } fro
 
 @Injectable({ providedIn: 'root' })
 export class PackagesService {
-    private readonly resource = createProjectResource<PackageList | null>(projectPackages, null);
+    // Only the manifests matter; the filter keeps writes inside Packages/ from
+    // triggering a re-read on every installed file.
+    private readonly resource = createProjectResource<PackageList | null>(projectPackages, null, {
+        match: (path) => /(wally\.toml|wally\.lock)$/.test(path),
+        delayMs: 400,
+    });
 
     readonly list = this.resource.data;
     readonly busy = signal(false);

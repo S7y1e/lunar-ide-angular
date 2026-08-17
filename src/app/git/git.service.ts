@@ -1,5 +1,6 @@
 import { Injectable, effect, inject, signal } from '@angular/core';
 import { ProjectService } from '../core/project.service';
+import { ProjectWatcherService } from '../core/project-watcher.service';
 import {
     GitCommit,
     GitStatus,
@@ -13,12 +14,17 @@ import {
     gitUnstage,
 } from '../core/git';
 
-// Angular port of use-git.ts. No filesystem watcher yet (the original
-// re-refreshes on any change under the project root) — refresh happens on
-// project-open and after each action, which covers the common flow.
+// Coarser than the other watchers on purpose: git status has to react to
+// anything (a checkout, a commit made in a terminal, an index write), so it
+// takes no path filter and coalesces harder to avoid a storm of `git status`
+// runs during a branch switch.
+const GIT_WATCH_DELAY_MS = 600;
+
+// Angular port of use-git.ts.
 @Injectable({ providedIn: 'root' })
 export class GitService {
     private readonly project = inject(ProjectService);
+    private readonly watcher = inject(ProjectWatcherService);
 
     readonly isRepo = signal<boolean | null>(null);
     readonly status = signal<GitStatus | null>(null);
@@ -29,6 +35,11 @@ export class GitService {
         effect(() => {
             if (this.project.root()) this.refresh();
         });
+        // No path filter: git status has to react to anything, including the
+        // .git writes the shared watcher drops. Those are exactly the events a
+        // commit made outside the IDE produces, so watch the worktree instead
+        // and let the coarse debounce absorb a branch switch.
+        this.watcher.subscribe(() => true, GIT_WATCH_DELAY_MS, () => this.refresh());
     }
 
     async refresh(): Promise<void> {

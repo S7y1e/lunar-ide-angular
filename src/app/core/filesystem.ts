@@ -1,4 +1,14 @@
-import { readDir, readTextFile, writeTextFile, mkdir, remove, rename, watch, type UnwatchFn } from '@tauri-apps/plugin-fs';
+import {
+    readDir,
+    readTextFile,
+    writeTextFile,
+    mkdir,
+    remove,
+    rename,
+    watch,
+    type UnwatchFn,
+    type WatchEvent,
+} from '@tauri-apps/plugin-fs';
 import { join, dirname } from '@tauri-apps/api/path';
 import { FileNode } from '../file-tree/file-node';
 
@@ -24,6 +34,76 @@ export async function readDirectory(parentPath: string): Promise<FileNode[]> {
 export const readFileText = (path: string): Promise<string> => readTextFile(path);
 export const writeFileText = (path: string, content: string): Promise<void> =>
     writeTextFile(path, content);
+
+const RETRIES = 5;
+const retryDelay = (attempt: number): Promise<void> =>
+    new Promise((r) => setTimeout(r, 80 * (attempt + 1)));
+
+// While a sync tool (Argon in client mode) is also writing the file, our write
+// can hit a transient Windows sharing violation. Retry a few times so the save
+// lands in a window where the file isn't locked, instead of failing silently.
+export async function writeFileTextRetry(path: string, content: string): Promise<void> {
+    let lastErr: unknown;
+    for (let attempt = 0; attempt < RETRIES; attempt++) {
+        try {
+            await writeTextFile(path, content);
+            return;
+        } catch (e) {
+            lastErr = e;
+            await retryDelay(attempt);
+        }
+    }
+    throw lastErr;
+}
+
+// Reads can also fail with a sharing violation while the sync tool holds the
+// file. Retry instead of falling back to empty content — treating a failed
+// read as "" is what lets the editor later overwrite the real file with
+// nothing.
+export async function readFileTextRetry(path: string): Promise<string> {
+    let lastErr: unknown;
+    for (let attempt = 0; attempt < RETRIES; attempt++) {
+        try {
+            return await readTextFile(path);
+        } catch (e) {
+            lastErr = e;
+            await retryDelay(attempt);
+        }
+    }
+    throw lastErr;
+}
+
+export type WatchHandle = { dispose: () => void };
+
+// Registering an fs watcher is async, which leaves a window where the caller
+// already wants it gone — a closed tab, a switched project, a destroyed
+// component. Callers that just hold a handle and dispose it get that window
+// handled here instead of each re-deriving the same race (and leaking a live
+// watcher when they get it wrong).
+export function startWatch(
+    path: string,
+    onEvent: (event: WatchEvent) => void,
+    options: { recursive?: boolean; delayMs: number },
+    label = 'watch',
+): WatchHandle {
+    let disposed = false;
+    let unwatch: UnwatchFn | undefined;
+
+    watch(path, (event) => { if (!disposed) onEvent(event); }, options)
+        .then((fn) => {
+            if (disposed) fn();
+            else unwatch = fn;
+        })
+        .catch((e) => console.warn(`[${label}] watch failed`, path, e));
+
+    return {
+        dispose(): void {
+            disposed = true;
+            unwatch?.();
+            unwatch = undefined;
+        },
+    };
+}
 
 export async function createFile(parentPath: string, name: string): Promise<string> {
     const path = await join(parentPath, name);
