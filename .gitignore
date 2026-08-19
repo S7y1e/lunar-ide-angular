@@ -47,3 +47,11 @@ __screenshots__/
 # System files
 .DS_Store
 Thumbs.db
+
+# makepkg working files, when PKGBUILD is built from this directory. Its
+# $srcdir is ./src, which is already the Angular source root, so the clone
+# lands inside it and the usual "/src" entry would ignore the whole app.
+/pkg
+/lunar-ide-angular
+/src/lunar-ide-angular
+*.pkg.tar.zst
