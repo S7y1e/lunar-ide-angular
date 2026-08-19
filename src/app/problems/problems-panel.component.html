@@ -19,7 +19,9 @@
                     </div>
                     @for (d of f.diags; track $index) {
                         <button class="row" [title]="f.rel + ':' + (d.range.start.line + 1)" (click)="openAt(f.rel, d)">
-                            <span [class]="isError(d) ? 'iconError' : 'iconWarn'">{{ isError(d) ? '⛔' : '⚠' }}</span>
+                            <!-- Both glyphs must be monochrome so they take the --danger /
+                                 --warning colour; ⛔ is a colour-font emoji and ignored it. -->
+                            <span [class]="isError(d) ? 'iconError' : 'iconWarn'">{{ isError(d) ? 'ⓧ' : '⚠' }}</span>
                             <span class="lineNum">{{ d.range.start.line + 1 }}</span>
                             <span class="message">{{ d.message }}</span>
                         </button>
