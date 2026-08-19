@@ -10,10 +10,14 @@
 .saveErrorBanner {
     flex-shrink: 0;
     padding: 6px 12px;
-    background: rgba(220, 80, 80, 0.12);
-    border-bottom: 1px solid rgba(220, 80, 80, 0.4);
-    border-left: 2px solid #dc5050;
-    color: #ff9b9b;
+    background: color-mix(in srgb, var(--danger) 12%, transparent);
+    border-bottom: 1px solid color-mix(in srgb, var(--danger) 40%, transparent);
+    border-left: 2px solid var(--danger);
+    // Lifted toward --text-bright so the text clears 4.5:1 against the tinted
+    // background in every theme, instead of a fixed light red. 55% is the
+    // ratio that holds for Nord, the tightest palette; it also flips dark on
+    // the light themes, where --text-bright is dark.
+    color: color-mix(in srgb, var(--danger) 55%, var(--text-bright));
     font-size: 12px;
     font-family: monospace;
     word-break: break-word;

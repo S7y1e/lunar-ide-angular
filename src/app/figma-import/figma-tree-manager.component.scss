@@ -53,7 +53,7 @@
 }
 
 .treeRowSelected {
-    background: rgba(97, 175, 239, 0.12);
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
 }
 
 .treeRowExcluded {
@@ -77,20 +77,20 @@
     padding: 1px 4px;
     border-radius: 3px;
     flex-shrink: 0;
-    background: rgba(97, 175, 239, 0.15);
+    background: color-mix(in srgb, var(--accent) 15%, transparent);
     color: var(--accent);
 
     &[data-cls='TextLabel'],
     &[data-cls='TextButton'],
     &[data-cls='TextBox'] {
-        background: rgba(229, 192, 123, 0.15);
-        color: #e5c07b;
+        background: color-mix(in srgb, var(--warning) 15%, transparent);
+        color: var(--warning);
     }
 
     &[data-cls='ImageLabel'],
     &[data-cls='ImageButton'] {
-        background: rgba(152, 195, 121, 0.15);
-        color: #98c379;
+        background: color-mix(in srgb, var(--success) 15%, transparent);
+        color: var(--success);
     }
 }
 
