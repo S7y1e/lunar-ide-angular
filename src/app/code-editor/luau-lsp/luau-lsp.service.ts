@@ -27,7 +27,6 @@ async function resolveBundled(resource: string): Promise<string | null> {
 const FFLAG_KEYS = [
     'luau-lsp.fflags.enableByDefault',
     'luau-lsp.fflags.enableNewSolver',
-    'luau-lsp.fflags.sync',
     'luau-lsp.fflags.override',
 ];
 

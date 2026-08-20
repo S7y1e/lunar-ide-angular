@@ -175,16 +175,16 @@ export const LUAU_SETTINGS: LuauSetting[] = [
         description: 'Enable all (boolean) Luau FFlags by default.',
     },
     {
+        // Off to match Studio, where the new solver is still an opt-in beta.
+        // Defaulting it on made the editor disagree with the engine: measured
+        // on a 120-file project, V2 reported 2941 type errors against the old
+        // solver's 1486 — 1455 squiggles for code Studio accepts. Turn this on
+        // only alongside Studio's "New Luau Type Solver" beta.
         key: 'luau-lsp.fflags.enableNewSolver',
         type: 'boolean',
-        default: true,
-        description: "Enable the flags required for Luau's new type solver.",
-    },
-    {
-        key: 'luau-lsp.fflags.sync',
-        type: 'boolean',
         default: false,
-        description: "Sync currently enabled FFlags with Roblox's published FFlags. Off by default so it can't clobber the new type solver.",
+        description:
+            "Enable Luau's new type solver (LuauSolverV2). Match this to Studio's beta setting, or the editor will report errors the engine does not.",
     },
     {
         key: 'luau-lsp.fflags.override',
