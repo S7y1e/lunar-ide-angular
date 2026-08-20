@@ -22,4 +22,9 @@ export class TestsPanelComponent {
         const spec = await this.tests.setup();
         if (spec) this.editorGroups.openFileAt(spec);
     }
+
+    protected async onConfirmWally(): Promise<void> {
+        const spec = await this.tests.confirmWally();
+        if (spec) this.editorGroups.openFileAt(spec);
+    }
 }

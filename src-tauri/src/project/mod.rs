@@ -232,6 +232,44 @@ pub fn project_run_test(store: State<'_, ProjectStore>) -> Result<TestRun, Strin
     run_shell(&root, &command)
 }
 
+/// Absolute path of a bundled sidecar. Tauri drops sidecars next to the app
+/// executable (and into `target/debug` under `tauri dev`), so resolving from
+/// `current_exe` works in both. Going through the shell instead would look the
+/// tool up on PATH — and a GUI app launched from a desktop entry inherits the
+/// session's PATH, which has neither `~/.rokit/bin` nor a login shell's additions.
+fn sidecar(name: &str) -> Result<PathBuf, String> {
+    let exe = std::env::current_exe().map_err(|e| e.to_string())?;
+    let dir = exe.parent().ok_or("Could not locate the app directory")?;
+    let path = dir.join(if cfg!(windows) {
+        format!("{name}.exe")
+    } else {
+        name.to_string()
+    });
+    if !path.is_file() {
+        return Err(format!("Bundled {name} is missing from this install"));
+    }
+    Ok(path)
+}
+
+/// Run a bundled sidecar in the project root and capture its combined output.
+fn run_sidecar(root: &Path, name: &str, args: &[&str]) -> Result<TestRun, String> {
+    let program = sidecar(name)?;
+    let mut cmd = std::process::Command::new(program);
+    cmd.args(args).current_dir(root);
+    #[cfg(windows)]
+    {
+        use std::os::windows::process::CommandExt;
+        cmd.creation_flags(0x0800_0000); // CREATE_NO_WINDOW
+    }
+    let output = cmd
+        .output()
+        .map_err(|e| format!("Failed to start {name}: {e}"))?;
+    Ok(TestRun {
+        code: output.status.code().unwrap_or(-1),
+        output: combine_output(&output),
+    })
+}
+
 // Runs the manifest's declared test command through the platform shell so the
 // user can write a normal command line (args, pipes) in lunar.toml.
 fn run_shell(root: &Path, command: &str) -> Result<TestRun, String> {
@@ -253,6 +291,15 @@ fn run_shell(root: &Path, command: &str) -> Result<TestRun, String> {
         .output();
 
     let output = output.map_err(|e| e.to_string())?;
+    Ok(TestRun {
+        code: output.status.code().unwrap_or(-1),
+        output: combine_output(&output),
+    })
+}
+
+/// stdout followed by stderr — tools split their progress and their errors
+/// across both, and the panels show a single log.
+fn combine_output(output: &std::process::Output) -> String {
     let mut text = String::from_utf8_lossy(&output.stdout).into_owned();
     let stderr = String::from_utf8_lossy(&output.stderr);
     if !stderr.is_empty() {
@@ -261,10 +308,7 @@ fn run_shell(root: &Path, command: &str) -> Result<TestRun, String> {
         }
         text.push_str(&stderr);
     }
-    Ok(TestRun {
-        code: output.status.code().unwrap_or(-1),
-        output: text,
-    })
+    text
 }
 
 fn folder_name(root: &Path) -> String {

@@ -16,6 +16,9 @@ export class TestResultsService {
     readonly running = signal(false);
     readonly setupLog = signal<string | null>(null);
     readonly busy = signal(false);
+    // Contents of the wally.toml the backend proposes to create, when the
+    // project has none. Non-null means we are waiting on the user to confirm.
+    readonly pendingWally = signal<string | null>(null);
 
     readonly configured = computed(() => {
         const snap = this.project.snapshot();
@@ -40,11 +43,17 @@ export class TestResultsService {
 
     // One-click onboarding: install TestEZ, seed a spec, configure lunar.toml.
     // Returns the created spec's relative path (if any) so the caller can open it.
-    async setup(): Promise<string | null> {
+    // A project with no wally.toml stops short and parks the proposed file in
+    // pendingWally instead — nothing on disk is touched until confirmWally().
+    async setup(createWally = false): Promise<string | null> {
         this.busy.set(true);
         this.setupLog.set(null);
         try {
-            const res = await setupTestez();
+            const res = await setupTestez(createWally);
+            if (res.needsWally) {
+                this.pendingWally.set(res.needsWally);
+                return null;
+            }
             this.setupLog.set(res.log);
             return res.specFile;
         } catch (e) {
@@ -53,6 +62,15 @@ export class TestResultsService {
         } finally {
             this.busy.set(false);
         }
+    }
+
+    confirmWally(): Promise<string | null> {
+        this.pendingWally.set(null);
+        return this.setup(true);
+    }
+
+    cancelWally(): void {
+        this.pendingWally.set(null);
     }
 
     async run(): Promise<void> {

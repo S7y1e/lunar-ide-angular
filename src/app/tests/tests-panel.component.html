@@ -21,9 +21,25 @@
                     TestEZ runs your <code>*.spec.luau</code> tests inside Studio (edit mode — no
                     Play needed). Set it up and a sample spec will be created.
                 </p>
-                <button class="cta" [disabled]="tests.busy()" (click)="onSetup()">
-                    {{ tests.busy() ? 'Installing…' : 'Set up TestEZ' }}
-                </button>
+                @if (tests.pendingWally(); as wally) {
+                    <p class="confirm">
+                        This project has no <code>wally.toml</code>. TestEZ is installed with wally,
+                        so one has to be created first:
+                    </p>
+                    <pre class="log preview">{{ wally }}</pre>
+                    <div class="actions">
+                        <button class="cta" [disabled]="tests.busy()" (click)="onConfirmWally()">
+                            Create wally.toml
+                        </button>
+                        <button class="ghost" [disabled]="tests.busy()" (click)="tests.cancelWally()">
+                            Cancel
+                        </button>
+                    </div>
+                } @else {
+                    <button class="cta" [disabled]="tests.busy()" (click)="onSetup()">
+                        {{ tests.busy() ? 'Installing…' : 'Set up TestEZ' }}
+                    </button>
+                }
                 @if (tests.setupLog()) {
                     <pre class="log">{{ tests.setupLog() }}</pre>
                 }

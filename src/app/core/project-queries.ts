@@ -141,9 +141,16 @@ export type TestResults = {
     children?: TestNode[];
     error?: string; // config/require/run failure, before any test ran
 };
-export type TestezSetup = { log: string; specFile: string | null };
+export type TestezSetup = {
+    log: string;
+    specFile: string | null;
+    // Non-null when the project has no wally.toml: the file the backend would
+    // write. Nothing was changed — confirm and call again with createWally.
+    needsWally: string | null;
+};
 
-export const setupTestez = (): Promise<TestezSetup> => invoke('project_setup_testez');
+export const setupTestez = (createWally = false): Promise<TestezSetup> =>
+    invoke('project_setup_testez', { createWally });
 
 export type RenameLineEdit = { file: string; line: number; before: string; after: string };
 

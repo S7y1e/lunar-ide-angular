@@ -51,12 +51,26 @@ export class LuauLspService {
     private applyTimer: ReturnType<typeof setTimeout> | null = null;
     private fflagsSig = '';
     private currentRoot: string | null = null;
+    private testEz: string | null = null;
 
     constructor() {
         effect(() => {
             const root = this.project.root();
             untracked(() => {
                 this.onRootChanged(root);
+            });
+        });
+
+        // Definitions are passed as spawn-time --definitions args, so gaining or
+        // losing the [test] testez path needs a respawn. It changes without the
+        // root changing — "Set up TestEZ" writes lunar.toml and re-emits the
+        // snapshot in place — and without this the TestEZ globals would not
+        // resolve until the project was closed and reopened.
+        effect(() => {
+            const testEz = this.project.snapshot()?.testEz ?? null;
+            untracked(() => {
+                if (!this.currentRoot || testEz === this.testEz) return;
+                this.onRootChanged(this.currentRoot);
             });
         });
 
@@ -81,14 +95,22 @@ export class LuauLspService {
     }
 
     private async onRootChanged(root: string | null): Promise<void> {
-        await this.teardown();
+        // Claimed before the first await, not after: opening a project changes
+        // root and the testEz path in the same flush, and the testEz effect
+        // below runs while this is still suspended in teardown(). Assigning
+        // late would let it observe the previous root and respawn against it.
         this.currentRoot = root;
-        if (!root) return;
+        await this.teardown();
+        if (!root) {
+            this.testEz = null;
+            return;
+        }
 
         const [defs, found] = await Promise.all([resolveBundled(DEFINITIONS_RESOURCE), discoverDefinitionFiles(root)]);
         if (this.currentRoot !== root) return; // root changed again mid-await
 
-        const testEz = this.project.snapshot()?.testEz;
+        const testEz = this.project.snapshot()?.testEz ?? null;
+        this.testEz = testEz;
         const testezDefs = testEz ? await resolveBundled(TESTEZ_RESOURCE) : null;
         if (this.currentRoot !== root) return;
 

@@ -4,7 +4,7 @@ use std::path::Path;
 use serde::{Deserialize, Serialize};
 use tauri::State;
 
-use super::{run_shell, ProjectStore, TestRun};
+use super::{run_sidecar, ProjectStore, TestRun};
 
 const WALLY_TOML: &str = "wally.toml";
 const WALLY_LOCK: &str = "wally.lock";
@@ -225,13 +225,13 @@ pub fn package_remove(
 #[tauri::command]
 pub fn wally_install(store: State<'_, ProjectStore>) -> Result<TestRun, String> {
     let root = store.root().ok_or("No project open")?;
-    run_shell(&root, "wally install")
+    run_sidecar(&root, "wally", &["install"])
 }
 
 #[tauri::command]
 pub fn wally_update(store: State<'_, ProjectStore>) -> Result<TestRun, String> {
     let root = store.root().ok_or("No project open")?;
-    run_shell(&root, "wally update")
+    run_sidecar(&root, "wally", &["update"])
 }
 
 #[cfg(test)]

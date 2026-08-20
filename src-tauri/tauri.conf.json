@@ -33,7 +33,8 @@
             "binaries/rokit",
             "binaries/argon",
             "binaries/rojo",
-            "binaries/luau-lsp"
+            "binaries/luau-lsp",
+            "binaries/wally"
         ],
         "resources": [
             "resources/globalTypes.PluginSecurity.d.luau",

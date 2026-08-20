@@ -1,7 +1,8 @@
 #!/usr/bin/env bun
 /**
- * Downloads the latest binaries for all external tools (luau-lsp, rojo, argon, rokit)
- * for all supported Tauri target triples and places them in src-tauri/binaries/.
+ * Downloads the latest binaries for all external tools (luau-lsp, rojo, argon,
+ * rokit, wally) for all supported Tauri target triples and places them in
+ * src-tauri/binaries/.
  *
  * Usage: bun run scripts/download-binaries.ts
  */
@@ -29,12 +30,16 @@ interface Tool {
   name: string;
   repo: string;
   // Given platform+arch, return the asset filename in the GitHub release.
-  // Return null to skip (e.g. luau-lsp has a single universal macos zip).
+  // Return null when the release has no build for that triple.
   assetName: (
     version: string,
     platform: string,
     arch: string
   ) => string | null;
+  // For triples with no asset of their own, the triple to copy the binary from
+  // — e.g. luau-lsp ships one universal macOS build that serves both arches.
+  // Leave unset and a missing asset is simply skipped.
+  reuseFrom?: (platform: string, arch: string) => string | null;
   // The binary filename inside the zip (without .exe — we add that for Windows).
   binaryName: string;
   // Pin to a specific tag instead of floating on "latest". Set this when a
@@ -60,6 +65,8 @@ const TOOLS: Tool[] = [
       }
       return null;
     },
+    reuseFrom: (platform, arch) =>
+      platform === "macos" && arch === "aarch64" ? "x86_64-apple-darwin" : null,
   },
   {
     name: "rojo",
@@ -81,6 +88,20 @@ const TOOLS: Tool[] = [
     binaryName: "rokit",
     assetName: (version, platform, arch) =>
       `rokit-${version}-${platform}-${arch}.zip`,
+  },
+  {
+    // Bundled rather than left to the user's PATH: the IDE shells out to wally
+    // for `wally install` (Packages panel, TestEZ setup), and a GUI app started
+    // from a desktop launcher does not see ~/.rokit/bin or a login shell's PATH.
+    name: "wally",
+    repo: "UpliftGames/wally",
+    binaryName: "wally",
+    assetName: (version, platform, arch) => {
+      // Wally keeps the "v" in its asset names and only publishes x86_64 builds.
+      if (arch !== "x86_64") return null;
+      if (platform === "windows") return `wally-v${version}-win64.zip`;
+      return `wally-v${version}-${platform}.zip`;
+    },
   },
 ];
 
@@ -154,10 +175,15 @@ async function main() {
 
       const assetFilename = tool.assetName(version, platform, arch);
 
-      // null means "share with another triple" (e.g. luau-lsp aarch64-apple-darwin uses same zip as x86_64)
+      // No asset for this triple: either copy from the triple the tool shares a
+      // universal build with, or skip. Never guess a source — copying an x86_64
+      // build to an aarch64 filename ships a binary that cannot run.
       if (assetFilename === null) {
-        // For luau-lsp: copy from the x86_64 triple output
-        const srcTriple = "x86_64-apple-darwin";
+        const srcTriple = tool.reuseFrom?.(platform, arch) ?? null;
+        if (!srcTriple) {
+          console.log(`  [${triple}] Skipping (no build published for this target)`);
+          continue;
+        }
         const srcPath = join(BINARIES_DIR, `${tool.name}-${srcTriple}`);
         const destPath = join(BINARIES_DIR, `${tool.name}-${triple}`);
         if (existsSync(srcPath)) {

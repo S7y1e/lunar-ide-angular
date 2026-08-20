@@ -18,8 +18,8 @@ sha256sums=('SKIP')
 build() {
   cd "$srcdir/$_reponame"
   npm ci
-  # Fetches the rokit/argon/rojo/luau-lsp sidecars into src-tauri/binaries and
-  # marks them executable, which the committed copies are not.
+  # Fetches the rokit/argon/rojo/luau-lsp/wally sidecars into src-tauri/binaries
+  # and marks them executable, which the committed copies are not.
   npm run download-binaries
   # `--` so the flags reach tauri instead of being eaten by npm run.
   npm run tauri -- build --bundles deb

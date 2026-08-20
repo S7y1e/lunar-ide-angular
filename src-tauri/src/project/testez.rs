@@ -3,8 +3,12 @@ use serde::Serialize;
 use serde_json::Value;
 use tauri::{AppHandle, Emitter, State};
 
-use super::{run_shell, ProjectModel, ProjectStore, MANIFEST_FILE};
+use super::{folder_name, run_sidecar, ProjectModel, ProjectStore, MANIFEST_FILE};
 
+// Deliberately a regular dependency, not a dev-dependency: wally puts
+// dev-dependencies in DevPackages/, and neither our new-project rojo template
+// nor a typical default.project.json maps that folder into the DataModel — the
+// plugin would then fail to resolve DEFAULT_TESTEZ_PATH at run time.
 const TESTEZ_DEP: &str = "TestEZ = \"roblox/testez@0.4.1\"";
 const DEFAULT_TESTEZ_PATH: &str = "game.ReplicatedStorage.Packages.TestEZ";
 const DEFAULT_ROOT_PATH: &str = "game.ReplicatedStorage.Tests";
@@ -26,6 +30,31 @@ end\n";
 pub struct TestezSetup {
     pub log: String,
     pub spec_file: Option<String>,
+    /// Set when the project has no wally.toml: the exact contents we would
+    /// write. Nothing has been touched yet — the UI shows this for confirmation
+    /// and calls back with `create_wally: true` to go ahead.
+    pub needs_wally: Option<String>,
+}
+
+/// A minimal manifest for a project that has never used wally. Package names
+/// must be `scope/name`, lowercase, alphanumeric plus `-` and `_`.
+fn wally_template(root: &Path) -> String {
+    let name: String = folder_name(root)
+        .to_lowercase()
+        .chars()
+        .map(|c| if c.is_ascii_alphanumeric() || c == '-' || c == '_' { c } else { '-' })
+        .collect();
+    let name = name.trim_matches('-');
+    let name = if name.is_empty() { "project" } else { name };
+    format!(
+        "[package]\n\
+         name = \"local/{name}\"\n\
+         version = \"0.1.0\"\n\
+         registry = \"https://github.com/UpliftGames/wally-index\"\n\
+         realm = \"shared\"\n\
+         \n\
+         [dependencies]\n"
+    )
 }
 
 // One-click onboarding: add the TestEZ wally dep + install, seed an example
@@ -34,6 +63,7 @@ pub struct TestezSetup {
 pub fn project_setup_testez(
     app: AppHandle,
     store: State<'_, ProjectStore>,
+    create_wally: bool,
 ) -> Result<TestezSetup, String> {
     let (root, project_file) = {
         let guard = store.0.lock().unwrap();
@@ -43,8 +73,24 @@ pub fn project_setup_testez(
     let mut log = String::new();
 
     let wally_path = root.join("wally.toml");
-    let wally = std::fs::read_to_string(&wally_path)
-        .map_err(|e| format!("wally.toml not found: {e}"))?;
+    let wally = match std::fs::read_to_string(&wally_path) {
+        Ok(text) => text,
+        Err(_) if create_wally => {
+            let text = wally_template(&root);
+            std::fs::write(&wally_path, &text).map_err(|e| e.to_string())?;
+            log.push_str("• Created wally.toml\n");
+            text
+        }
+        // First pass on a project with no wally.toml: hand the proposed file
+        // back and write nothing until the user has seen it.
+        Err(_) => {
+            return Ok(TestezSetup {
+                log: String::new(),
+                spec_file: None,
+                needs_wally: Some(wally_template(&root)),
+            })
+        }
+    };
     if !wally.to_lowercase().contains("testez") {
         std::fs::write(&wally_path, add_dependency(&wally)).map_err(|e| e.to_string())?;
         log.push_str("• Added TestEZ to wally.toml\n");
@@ -52,7 +98,7 @@ pub fn project_setup_testez(
         log.push_str("• wally.toml already lists TestEZ\n");
     }
 
-    let install = run_shell(&root, "wally install")?;
+    let install = run_sidecar(&root, "wally", &["install"])?;
     if install.code != 0 {
         return Err(format!(
             "wally install failed (exit {}):\n{}",
@@ -89,7 +135,11 @@ pub fn project_setup_testez(
     let _ = app.emit("project://changed", ());
     let _ = app.emit("project://opened", snapshot);
 
-    Ok(TestezSetup { log, spec_file })
+    Ok(TestezSetup {
+        log,
+        spec_file,
+        needs_wally: None,
+    })
 }
 
 fn add_dependency(content: &str) -> String {
@@ -141,4 +191,36 @@ fn has_spec(dir: &Path) -> bool {
         .flatten()
         .flatten()
         .any(|e| e.file_name().to_string_lossy().ends_with(".spec.luau"))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    // The generated manifest plus the dependency line is what gets handed to
+    // `wally install`; verified against wally 0.3.2, which resolves it and
+    // writes Packages/TestEZ.lua — the instance DEFAULT_TESTEZ_PATH points at.
+    #[test]
+    fn generated_manifest_is_a_complete_wally_package() {
+        let manifest = add_dependency(&wally_template(Path::new("/home/u/Projects/eb")));
+        assert!(manifest.contains("name = \"local/eb\""));
+        assert!(manifest.contains("registry = \"https://github.com/UpliftGames/wally-index\""));
+        assert!(manifest.contains("realm = \"shared\""));
+        assert!(manifest.contains(TESTEZ_DEP));
+        // The dep has to land under [dependencies], not after it in limbo.
+        let deps = manifest.find("[dependencies]").expect("has a dependencies section");
+        assert!(manifest.find(TESTEZ_DEP).unwrap() > deps);
+    }
+
+    #[test]
+    fn folder_names_are_sanitised_into_valid_package_names() {
+        assert!(wally_template(Path::new("/tmp/My Game 2!")).contains("name = \"local/my-game-2\""));
+    }
+
+    #[test]
+    fn dependency_goes_under_an_existing_section() {
+        let out = add_dependency("[package]\nname = \"a/b\"\n\n[dependencies]\nRoact = \"roblox/roact@1.4.2\"\n");
+        assert!(out.contains(TESTEZ_DEP));
+        assert!(out.contains("Roact = \"roblox/roact@1.4.2\""));
+    }
 }

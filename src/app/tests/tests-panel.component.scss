@@ -66,6 +66,36 @@
     white-space: pre-wrap;
     text-align: left;
 }
+.confirm {
+    font-size: 12px;
+    margin: 0;
+}
+.preview {
+    align-self: stretch;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px;
+    // A manifest is one long `registry = "https://…"` line; wrapping it keeps
+    // the panel from scrolling sideways in a sidebar this narrow.
+    overflow-wrap: anywhere;
+}
+.actions {
+    display: flex;
+    gap: 8px;
+}
+.ghost {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: none;
+    color: var(--muted);
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 12px;
+}
+.ghost:disabled {
+    opacity: 0.6;
+    cursor: default;
+}
 .empty {
     color: var(--muted);
     text-align: center;
