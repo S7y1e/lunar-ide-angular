@@ -11,8 +11,9 @@ export type ProjectResource<T> = {
 // Auto-refresh config: which paths under the project root should trigger a
 // re-fetch, and how long to coalesce a burst of writes. The filter is per
 // resource because they genuinely disagree — insights/deps/events *consume*
-// sourcemap.json while the DataModel *writes* it and must ignore it or it
-// would loop forever (write → watcher → regenerate → write → …).
+// sourcemap.json, while the DataModel builds its tree in memory from the
+// sources and ignores the file entirely. (The file on disk is written by
+// luau-lsp/sourcemap.service.ts, for the language server alone.)
 export type ProjectWatch = {
     match: (path: string) => boolean;
     delayMs: number;

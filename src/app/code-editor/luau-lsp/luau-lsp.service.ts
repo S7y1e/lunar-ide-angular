@@ -9,6 +9,7 @@ import { pathToUri } from '../../core/monaco-uri';
 import { SettingsService } from '../../core/settings.service';
 import { SettingsValues } from '../../core/settings-store';
 import { ProjectService } from '../../core/project.service';
+import { SourcemapService } from './sourcemap.service';
 
 const DEFINITIONS_RESOURCE = 'resources/globalTypes.PluginSecurity.d.luau';
 const TESTEZ_RESOURCE = 'resources/testez.d.luau';
@@ -41,6 +42,7 @@ const fflagSignature = (values: SettingsValues): string => JSON.stringify(FFLAG_
 export class LuauLspService {
     private readonly project = inject(ProjectService);
     private readonly settings = inject(SettingsService);
+    private readonly sourcemap = inject(SourcemapService);
 
     readonly client = signal<LuauLspClient | null>(null);
 
@@ -116,6 +118,15 @@ export class LuauLspService {
         this.definitionsPaths = [defs, testezDefs].filter((p): p is string => !!p);
         this.discovered = found;
         this.fflagsSig = fflagSignature(this.settings.values());
+
+        // Before the spawn, not after: the server reads sourcemap.json once at
+        // boot, and only re-reads it on a watched-file event. Writing it later
+        // would race that — the server would come up against whatever the last
+        // session left behind, and a write landing before it registered its
+        // watch would never be noticed at all.
+        await this.sourcemap.write();
+        if (this.currentRoot !== root) return;
+
         await this.spawn(root);
     }
 

@@ -193,8 +193,13 @@ pub fn project_data_model(store: State<'_, ProjectStore>) -> Option<DataModelNod
     sourcemap::generate(&root, &project_file)
 }
 
+/// Regenerate sourcemap.json for luau-lsp. Returns whether the file changed:
+/// the caller drives this off a filesystem watcher, and every content-only edit
+/// reaches here with an identical tree. Reporting that lets the caller skip
+/// reloading the sourcemap in the server and re-opening every document, which
+/// is disruptive enough that doing it on each keystroke-save is not an option.
 #[tauri::command]
-pub fn project_write_sourcemap(store: State<'_, ProjectStore>) -> Result<(), String> {
+pub fn project_write_sourcemap(store: State<'_, ProjectStore>) -> Result<bool, String> {
     let (root, project_file) = {
         let guard = store.0.lock().unwrap();
         let m = guard.as_ref().ok_or("No project open")?;
@@ -203,7 +208,12 @@ pub fn project_write_sourcemap(store: State<'_, ProjectStore>) -> Result<(), Str
     let node = sourcemap::generate(&root, &project_file)
         .ok_or("Failed to generate sourcemap")?;
     let json = serde_json::to_string_pretty(&node).map_err(|e| e.to_string())?;
-    std::fs::write(root.join(SOURCEMAP_FILE), json).map_err(|e| e.to_string())
+    let path = root.join(SOURCEMAP_FILE);
+    if std::fs::read_to_string(&path).is_ok_and(|old| old == json) {
+        return Ok(false);
+    }
+    std::fs::write(&path, json).map_err(|e| e.to_string())?;
+    Ok(true)
 }
 
 #[derive(Debug, Clone, Serialize)]

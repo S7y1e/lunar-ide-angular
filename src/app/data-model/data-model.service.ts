@@ -6,8 +6,9 @@ import { makeResolver } from '../core/resolve-instance';
 const WATCHED_EXTS = ['.luau', '.lua', '.json', '.toml'];
 
 export function isRelevant(path: string): boolean {
-    // Never react to our own sourcemap write, or we'd loop forever:
-    // write sourcemap.json → watcher fires → regenerate → write → …
+    // The tree is generated in memory from the sources, so sourcemap.json is not
+    // an input here — reacting to it would just mean a second, identical rebuild
+    // every time the language server's copy is rewritten.
     if (path.replace(/\\/g, '/').endsWith('sourcemap.json')) return false;
     return WATCHED_EXTS.some((ext) => path.endsWith(ext));
 }
