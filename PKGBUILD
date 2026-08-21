@@ -1,7 +1,7 @@
 # Maintainer: S7y1e
 pkgname=lunar-ide
 _reponame=lunar-ide-angular
-pkgver=5.0.2
+pkgver=5.0.3
 pkgrel=1
 pkgdesc="IDE for Luau, built with Tauri, Angular and Monaco Editor"
 arch=('x86_64')
